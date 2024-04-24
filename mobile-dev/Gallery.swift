@@ -102,7 +102,7 @@ struct Gallery: View {
                     }
                     .padding(.leading)
                     Spacer()
-                    NavigationLink(destination: LoadingView(selectedImageData: selectedImageData)) {
+                    NavigationLink(destination: Gallery()) {
                         RoundedRectangle(cornerRadius: 12)
                             .frame(maxWidth: 350, maxHeight: 60)
                             .foregroundColor(Color.blue)
@@ -118,7 +118,7 @@ struct Gallery: View {
                                 }
                             )
                     }
-                    .padding()
+                        .padding()
                 }
             }
         }
