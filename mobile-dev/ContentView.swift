@@ -28,7 +28,7 @@ struct ContentView: View {
                         .foregroundColor(Color.white)
                         .lineSpacing(5)
                     
-                    NavigationLink(destination: galleryEmpty()) {
+                    NavigationLink(destination: Gallery()) {
                         Text("Continue")
                             .foregroundColor(.white)
                             .font(Font.system(size: 16).weight(.medium))

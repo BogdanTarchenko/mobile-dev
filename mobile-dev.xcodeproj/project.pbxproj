@@ -11,7 +11,7 @@
 		431D5C182BD7CF2300F66630 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431D5C172BD7CF2300F66630 /* ContentView.swift */; };
 		431D5C1A2BD7CF2500F66630 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 431D5C192BD7CF2500F66630 /* Assets.xcassets */; };
 		431D5C1D2BD7CF2500F66630 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 431D5C1C2BD7CF2500F66630 /* Preview Assets.xcassets */; };
-		439135762BD9509C00D5FDEC /* galleryEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439135752BD9509C00D5FDEC /* galleryEmpty.swift */; };
+		439135762BD9509C00D5FDEC /* Gallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439135752BD9509C00D5FDEC /* Gallery.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,7 +20,7 @@
 		431D5C172BD7CF2300F66630 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		431D5C192BD7CF2500F66630 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		431D5C1C2BD7CF2500F66630 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		439135752BD9509C00D5FDEC /* galleryEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = galleryEmpty.swift; sourceTree = "<group>"; };
+		439135752BD9509C00D5FDEC /* Gallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gallery.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +54,8 @@
 			isa = PBXGroup;
 			children = (
 				431D5C152BD7CF2300F66630 /* mobile_devApp.swift */,
-				439135752BD9509C00D5FDEC /* galleryEmpty.swift */,
 				431D5C172BD7CF2300F66630 /* ContentView.swift */,
+				439135752BD9509C00D5FDEC /* Gallery.swift */,
 				431D5C192BD7CF2500F66630 /* Assets.xcassets */,
 				431D5C1B2BD7CF2500F66630 /* Preview Content */,
 			);
@@ -141,7 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				431D5C182BD7CF2300F66630 /* ContentView.swift in Sources */,
-				439135762BD9509C00D5FDEC /* galleryEmpty.swift in Sources */,
+				439135762BD9509C00D5FDEC /* Gallery.swift in Sources */,
 				431D5C162BD7CF2300F66630 /* mobile_devApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
