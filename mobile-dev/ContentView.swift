@@ -3,13 +3,15 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationView {
-            ZStack(alignment:.bottomLeading) {
+            ZStack(alignment:.leading) {
                 Image("starting-screen-background")
-                    .aspectRatio(contentMode: .fill)
-                
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
+                    .scaledToFill()
                 VStack(alignment: .leading, spacing: 20) {
+                    Spacer()
                     RoundedRectangle(cornerRadius: 6)
-                        .frame(width: 150, height: 40)
+                        .frame(maxWidth: 150, maxHeight: 40)
                         .foregroundColor(Color.blue)
                         .overlay(
                             Text("Powered by HITs")
@@ -30,12 +32,12 @@ struct ContentView: View {
                         Text("Continue")
                             .foregroundColor(.white)
                             .font(Font.system(size: 16).weight(.medium))
-                            .frame(width: 350, height: 60)
+                            .frame(maxWidth: 500, maxHeight: 60)
                             .background(Color.blue)
                             .cornerRadius(12)
                     }
+                    .padding(.bottom, 70)
                 }
-                .offset(x: 20, y: -75)
                 .padding()
             }
         }
