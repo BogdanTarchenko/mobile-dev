@@ -31,7 +31,9 @@ struct Gallery: View {
                                     .foregroundColor(Color.gray)
                                     .opacity(0.25)
                                     .overlay(
-                                        Image("plus")
+                                        Image(systemName: "plus")
+                                            .foregroundColor(Color.black)
+                                            .font(Font.system(size: 60))
                                     )
                                     .aspectRatio(1/1, contentMode: .fit)
                             }
@@ -53,12 +55,20 @@ struct Gallery: View {
                     
                     RoundedRectangle(cornerRadius: 12)
                         .frame(maxWidth: 350, maxHeight: 60)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.blue)
+                        .opacity(0.3)
                         .overlay(
-                            Text("Select an image")
-                                .foregroundColor(.white)
-                                .font(Font.system(size: 18).weight(.medium))
+                            HStack {
+                                Image(systemName: "hammer")
+                                    .foregroundColor(.white)
+                                    .font(Font.system(size: 18).weight(.medium))
+                                    .padding(.trailing, 8)
+                                Text("Start editing")
+                                    .foregroundColor(.white)
+                                    .font(Font.system(size: 18).weight(.medium))
+                            }
                         )
+
                         .padding()
                     Spacer()
                 }
@@ -74,7 +84,10 @@ struct Gallery: View {
                                     .foregroundColor(Color.gray)
                                     .opacity(0.25)
                                     .overlay(
-                                        Image("plus")
+                                        Image(systemName: "plus")
+                                            .foregroundColor(Color.black)
+                                            .font(Font.system(size: 60))
+                                        
                                     )
                                     .aspectRatio(1/1, contentMode: .fit)
                             }
@@ -89,15 +102,22 @@ struct Gallery: View {
                     }
                     .padding(.leading)
                     Spacer()
-                    
-                    RoundedRectangle(cornerRadius: 12)
-                        .frame(maxWidth: 350, maxHeight: 60)
-                        .foregroundColor(Color.blue)
-                        .overlay(
-                            Text("Start editing")
-                                .foregroundColor(.white)
-                                .font(Font.system(size: 18).weight(.medium))
-                        )
+                    NavigationLink(destination: Gallery()) {
+                        RoundedRectangle(cornerRadius: 12)
+                            .frame(maxWidth: 350, maxHeight: 60)
+                            .foregroundColor(Color.blue)
+                            .overlay(
+                                HStack {
+                                    Image(systemName: "hammer")
+                                        .foregroundColor(.white)
+                                        .font(Font.system(size: 18).weight(.medium))
+                                        .padding(.trailing, 8)
+                                    Text("Start editing")
+                                        .foregroundColor(.white)
+                                        .font(Font.system(size: 18).weight(.medium))
+                                }
+                            )
+                    }
                         .padding()
                 }
             }
