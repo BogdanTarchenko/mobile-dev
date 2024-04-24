@@ -3,21 +3,28 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationView {
-            ZStack(alignment: .topLeading) {
+            ZStack(alignment:.bottomLeading) {
                 Image("starting-screen-background")
                     .aspectRatio(contentMode: .fill)
                 
                 VStack(alignment: .leading, spacing: 20) {
+                    RoundedRectangle(cornerRadius: 6)
+                        .frame(width: 150, height: 40)
+                        .foregroundColor(Color.blue)
+                        .overlay(
+                            Text("Powered by HITs")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 18).weight(.medium))
+                            )
+                    
                     Text("Photo Editor")
                         .font(Font.system(size: 36).weight(.bold))
                         .foregroundColor(Color.white)
-                        .offset(x:20, y:610)
                     
                     Text("Edit photos using built-in image\nprocessing filters, try out an AI technology")
                         .font(Font.system(size: 18).weight(.medium))
                         .foregroundColor(Color.white)
                         .lineSpacing(5)
-                        .offset(x:20, y:610)
                     
                     NavigationLink(destination: SecondView()) {
                         Text("Continue")
@@ -27,20 +34,8 @@ struct ContentView: View {
                             .background(Color.blue)
                             .cornerRadius(12)
                     }
-
-                    .offset(x:20, y:610)
-                    
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 6)
-                            .frame(width: 150, height: 40)
-                            .foregroundColor(Color.blue)
-                                        
-                        Text("Powered by HITs")
-                            .foregroundColor(.white)
-                            .font(Font.system(size: 18).weight(.medium))
-                    }
-                    .offset(x: 20, y: 345)
                 }
+                .offset(x: 20, y: -75)
                 .padding()
             }
         }
@@ -50,61 +45,57 @@ struct ContentView: View {
 struct SecondView: View {
     var body: some View {
         NavigationView {
-            VStack {
-                
+            VStack(alignment: .center, spacing: 15) {
                 Rectangle()
-                    .frame(maxWidth: .infinity, maxHeight: 140)
+                    .frame(maxWidth: .infinity, maxHeight: 250)
                     .foregroundColor(Color.gray)
                     .opacity(0.07)
-                    .offset(y:-80)
                     .overlay(
                         Text("Photos")
-                        .font(Font.system(size: 24).weight(.bold))
-                        .offset(y: -35)
+                            .font(Font.system(size: 24).weight(.bold))
                     )
-                RoundedRectangle(cornerRadius: 12)
-                    .frame(width: 120, height: 120)
-                    .foregroundColor(Color.gray)
-                    .opacity(0.25)
-                    .offset(x: -120, y: -70)
-                    .overlay(
-                        Image("plus")
-                            .offset(x: -120, y: -70)
-                        )
+                    .edgesIgnoringSafeArea(.top)
+                
+                HStack() {
+                    Button(action: {
+                        // тут должно быть действие на открытие галереи
+                    }) {
+                        RoundedRectangle(cornerRadius: 12)
+                            .frame(maxWidth: 130, maxHeight: 130)
+                            .foregroundColor(Color.gray)
+                            .opacity(0.25)
+                            .overlay(
+                                Image("plus")
+                            )
+                            .aspectRatio(1/1, contentMode: .fit)
+                    }
+                    .padding([.leading])
+                    Spacer()
+                }
                 
                 Spacer()
                 
                 Image("arrow")
-                    .offset(x: 15, y: -40)
                 
                 Text("Let's go!")
                     .font(Font.system(size: 46).weight(.bold))
-                    .offset(y: -20)
                 Text("Just add your photo here\nand start editing")
                     .multilineTextAlignment(.center)
                     .font(Font.system(size: 18).weight(.medium))
                     .foregroundColor(Color.gray)
-                    .offset(y: 0)
                 
-                Rectangle()
-                    .frame(maxWidth: .infinity, maxHeight: 180)
-                    .foregroundColor(Color.gray)
-                    .opacity(0.07)
-                    .offset(y: 50)
-                    .overlay(
-                        NavigationLink(destination: SecondView()) {
-                            RoundedRectangle(cornerRadius: 12)
-                                .frame(maxWidth: 350, maxHeight: 60)
-                                .foregroundColor(Color.blue)
-                                .offset(y: 35)
-                                .overlay(
-                                    Text("Start editing")
-                                        .foregroundColor(.white)
-                                        .font(Font.system(size: 18).weight(.medium))
-                                        .offset(y: 35)
-                                )
-                        }
-                    )
+                Spacer()
+                NavigationLink(destination: SecondView()) {
+                    RoundedRectangle(cornerRadius: 12)
+                        .frame(maxWidth: 350, maxHeight: 60)
+                        .foregroundColor(Color.blue)
+                        .overlay(
+                            Text("Start editing")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 18).weight(.medium))
+                        )
+                }
+                .padding()
             }
         }
         .navigationBarHidden(true)
@@ -118,12 +109,6 @@ struct SecondView_Previews: PreviewProvider {
         SecondView()
     }
 }
-
-
-
-
-
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
