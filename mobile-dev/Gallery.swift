@@ -74,32 +74,30 @@ struct Gallery: View {
                 }
                 
                 if selectedItem != nil {
-                    HStack() {
                         PhotosPicker(
                             selection: $selectedItem,
                             matching: .images,
                             photoLibrary: .shared()) {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .frame(maxWidth: 110, maxHeight: 110)
-                                    .foregroundColor(Color.gray)
-                                    .opacity(0.25)
-                                    .overlay(
-                                        Image(systemName: "plus")
-                                            .foregroundColor(Color.black)
-                                            .font(Font.system(size: 60))
-                                        
-                                    )
-                                    .aspectRatio(1/1, contentMode: .fit)
+                                if let selectedImageData,
+                                   let uiImage = UIImage(data: selectedImageData) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(maxHeight: 300)
+                                        .cornerRadius(12)
+                                        .padding()
+                                        .opacity(0.6)
+                                        .overlay(
+                                            HStack {
+                                                Image(systemName: "plus")
+                                                    .foregroundColor(.black)
+                                                    .font(Font.system(size: 60).weight(.medium))
+                                                    .padding(.trailing, 8)
+                                            }
+                                        )
+                                }
                             }
-                        if let selectedImageData,
-                           let uiImage = UIImage(data: selectedImageData) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .frame(maxWidth: 110, maxHeight: 110)
-                                .cornerRadius(12)
-                        }
                         Spacer()
-                    }
                     .padding(.leading)
                     Spacer()
                     NavigationLink(destination: LoadingView(selectedImageData: selectedImageData)) {
