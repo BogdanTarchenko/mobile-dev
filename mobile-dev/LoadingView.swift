@@ -13,7 +13,7 @@ struct LoadingView: View {
                             .font(.system(size: 22))
                             .foregroundColor(.white)
                             .font(Font.system(size: 16).weight(.medium))
-                            .frame(width: 60, height: 40)
+                            .frame(width: 40, height: 40)
                             .background(Color.black)
                             .cornerRadius(10)
                     }
@@ -225,6 +225,23 @@ struct LoadingView: View {
                                     .font(Font.system(size: 16).weight(.medium))
                                     .frame(width: 30, height: 30)
                                 Text("Affine")
+                                    .foregroundColor(.gray)
+                                    .font(Font.system(size: 17).weight(.light))
+                                
+                            }
+                        }
+                        Spacer()
+                        //9) 3D Кубик.
+                        Button(action:{
+                            // тут должно быть действие
+                        }) {
+                            VStack{
+                                Image(systemName: "cube.fill")
+                                    .font(.system(size: 25))
+                                    .foregroundColor(.gray)
+                                    .font(Font.system(size: 16).weight(.medium))
+                                    .frame(width: 30, height: 30)
+                                Text("3D Cube")
                                     .foregroundColor(.gray)
                                     .font(Font.system(size: 17).weight(.light))
                                 
