@@ -1,59 +1,86 @@
 import SwiftUI
 
+struct TopPanelBackButton: View {
+    let iconName: String
+    
+    var body: some View {
+        Image(systemName: iconName)
+            .font(.system(size: 22))
+            .foregroundColor(.white)
+            .font(Font.system(size: 16).weight(.medium))
+            .frame(width: 40, height: 40)
+            .background(Color.black)
+            .cornerRadius(10)
+    }
+}
+
+struct TopPanelButton: View {
+    let iconName: String
+    
+    var body: some View {
+        Image(systemName: iconName)
+            .font(.system(size: 22))
+            .foregroundColor(.gray)
+            .font(Font.system(size: 16).weight(.medium))
+            .frame(width: 40, height: 40)
+            .background(Color.black)
+            .cornerRadius(10)
+    }
+}
+
+struct BottomPanelButton: View {
+    let iconName: String
+    let text: String
+    
+    var body: some View {
+        VStack {
+            Image(systemName: iconName)
+                .font(.system(size: 25))
+                .foregroundColor(.gray)
+                .font(Font.system(size: 16).weight(.medium))
+                .frame(width: 30, height: 30)
+            Text(text)
+                .foregroundColor(.gray)
+                .font(Font.system(size: 17).weight(.light))
+        }
+    }
+}
+
 struct LoadingView: View {
     var selectedImageData: Data?
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(alignment: .center) {
                 
-                // Верхняя панель кнопок
+                // Top button bar
                 HStack {
+                    
                     NavigationLink(destination: Gallery()){
-                        Image(systemName: "chevron.backward")
-                            .font(.system(size: 22))
-                            .foregroundColor(.white)
-                            .font(Font.system(size: 16).weight(.medium))
-                            .frame(width: 40, height: 40)
-                            .background(Color.black)
-                            .cornerRadius(10)
+                        TopPanelBackButton(iconName: "chevron.backward")
                     }
+                    
                     Spacer()
+                    
                     Button(action:{
-                        // тут должно быть действие
+                        // Undo
                     }) {
-                        Image(systemName: "arrow.uturn.backward")
-                            .font(.system(size: 22))
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 16).weight(.medium))
-                            .frame(width: 40, height: 40)
-                            .background(Color.black)
-                            .cornerRadius(10)
+                        TopPanelButton(iconName: "arrow.uturn.backward")
                     }
                     Button(action:{
-                        // тут должно быть действие
+                        // Clear
                     }) {
-                        Image(systemName: "arrow.circlepath")
-                            .font(.system(size: 22))
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 16).weight(.medium))
-                            .frame(width: 40, height: 40)
-                            .background(Color.black)
-                            .cornerRadius(10)
+                        TopPanelButton(iconName: "arrow.circlepath")
                     }
                     Button(action:{
-                        // тут должно быть действие
+                        // Redo
                     }) {
-                        Image(systemName: "arrow.uturn.forward")
-                            .font(.system(size: 22))
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 16).weight(.medium))
-                            .frame(width: 40, height: 40)
-                            .background(Color.black)
-                            .cornerRadius(10)
+                        TopPanelButton(iconName: "arrow.uturn.forward")
                     }
+                    
                     Spacer()
+                    
                     Button(action:{
-                        // тут должно быть действие
+                        // Save
                     }) {
                         Text("Save")
                             .foregroundColor(.white)
@@ -65,6 +92,7 @@ struct LoadingView: View {
                 }
                 .padding()
                 
+                // SelectedImageView
                 if let imageData = selectedImageData,
                    let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
@@ -73,187 +101,78 @@ struct LoadingView: View {
                         .frame(maxWidth: .infinity, maxHeight: 400)
                         .padding()
                 }
+                
                 else {
                     Text("No image selected")
+                        .font(Font.system(size: 24).weight(.medium))
                         .frame(maxWidth: 350, maxHeight: 450)
                         .foregroundColor(.white)
                 }
-                Spacer()
-                Spacer()
-                Spacer()
+                
+                // Bottom/Scroll button bar
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 10) {
-    //                    Spacer()
-    //                    Image(systemName: "circle.circle")
-    //                        .font(.system(size: 32))
-    //                        .foregroundColor(.white)
-    //                        .padding()
-    //                    Text("Wait for it...")
-    //                        .foregroundColor(.gray)
-    //                    Text("We are saving your photo")
-    //                        .foregroundColor(.gray)
-    //                    Spacer()
-                        Spacer()
-                        //1) Повороты изображения.
+                    
+                    Spacer()
+                    
+                    HStack(spacing: 30) {
+                        
                         Button(action:{
-                            // тут должно быть действие
+                            // Turn
                         }) {
-                            VStack{
-                                Image(systemName: "arrow.uturn.left.square")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Turn")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                            }
+                            BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Turn")
                         }
                         
-                        Spacer()
-                        //2) Цветокоррекция и цветовые фильтры.
                         Button(action:{
-                            // тут должно быть действие
+                            // Filter
                         }) {
-                            VStack{
-                                Image(systemName: "camera.filters")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Filter")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
-                        }
-                        Spacer()
-                        //3) Масштабирование изображения.
-                        Button(action:{
-                            // тут должно быть действие
-                        }) {
-                            VStack{
-                                Image(systemName: "square.resize.up")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Rezise")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
-                        }
-                        Spacer()
-                        //4) Распознавание лиц/людей на изображении .
-                        Button(action:{
-                            // тут должно быть действие
-                        }) {
-                            VStack{
-                                Image(systemName: "faceid")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Face AI")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
-                        }
-                        Spacer()
-                        //5) Векторный редактор с рисованием ломаных линий и превращением их в сплайны.
-                        Button(action:{
-                            // тут должно быть действие
-                        }) {
-                            VStack{
-                                Image(systemName: "pencil.and.outline")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Vector")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
-                        }
-                        Spacer()
-                        //6) Ретуширование.
-                        Button(action:{
-                            // тут должно быть действие
-                        }) {
-                            VStack{
-                                Image(systemName: "wand.and.stars.inverse")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Retouch")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
-                        }
-                        Spacer()
-                        //7) Нерезкое маскирование.
-                        Button(action:{
-                            // тут должно быть действие
-                        }) {
-                            VStack{
-                                Image(systemName: "theatermasks")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Masking")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
+                            BottomPanelButton(iconName: "camera.filters", text: "Filter")
                         }
                         
-                        Spacer()
-                        //8) Нерезкое маскирование.
                         Button(action:{
-                            // тут должно быть действие
+                            // Resize
                         }) {
-                            VStack{
-                                Image(systemName: "slider.vertical.3")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("Affine")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
+                            BottomPanelButton(iconName: "square.resize.up", text: "Resize")
                         }
-                        Spacer()
-                        //9) 3D Кубик.
+                        
                         Button(action:{
-                            // тут должно быть действие
+                            // Face recognize
                         }) {
-                            VStack{
-                                Image(systemName: "cube.fill")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 16).weight(.medium))
-                                    .frame(width: 30, height: 30)
-                                Text("3D Cube")
-                                    .foregroundColor(.gray)
-                                    .font(Font.system(size: 17).weight(.light))
-                                
-                            }
+                            BottomPanelButton(iconName: "faceid", text: "Face AI")
                         }
-                        Spacer()
+                        
+                        Button(action:{
+                            // Vector
+                        }) {
+                            BottomPanelButton(iconName: "pencil.and.outline", text: "Vector")
+                        }
+                        
+                        Button(action:{
+                            // Retouch
+                        }) {
+                            BottomPanelButton(iconName: "wand.and.stars.inverse", text: "Retouch")
+                        }
+                        
+                        Button(action:{
+                            // Masking
+                        }) {
+                            BottomPanelButton(iconName: "theatermasks", text: "Masking")
+                        }
+                        
+                        Button(action:{
+                            // Affine
+                        }) {
+                            BottomPanelButton(iconName: "slider.vertical.3", text: "Affine")
+                        }
+                        
+                        Button(action:{
+                            // Cube
+                        }) {
+                            BottomPanelButton(iconName: "cube.fill", text: "Cube")
+                        }
+                        
                     }
-                   
                 }
-                Spacer()
-                
-                
+                .padding(.horizontal, 30)
             }
             .background(Color.black)
         }
