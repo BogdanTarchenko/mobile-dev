@@ -13,6 +13,7 @@
 		431D5C1D2BD7CF2500F66630 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 431D5C1C2BD7CF2500F66630 /* Preview Assets.xcassets */; };
 		439135762BD9509C00D5FDEC /* Gallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439135752BD9509C00D5FDEC /* Gallery.swift */; };
 		4391357C2BD9813200D5FDEC /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4391357B2BD9813200D5FDEC /* LoadingView.swift */; };
+		43BE19B22BDBE18000292729 /* RotatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BE19B12BDBE18000292729 /* RotatedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		431D5C1C2BD7CF2500F66630 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		439135752BD9509C00D5FDEC /* Gallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gallery.swift; sourceTree = "<group>"; };
 		4391357B2BD9813200D5FDEC /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		43BE19B12BDBE18000292729 /* RotatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,10 +57,11 @@
 		431D5C142BD7CF2300F66630 /* mobile-dev */ = {
 			isa = PBXGroup;
 			children = (
-				4391357B2BD9813200D5FDEC /* LoadingView.swift */,
 				431D5C152BD7CF2300F66630 /* mobile_devApp.swift */,
 				431D5C172BD7CF2300F66630 /* ContentView.swift */,
 				439135752BD9509C00D5FDEC /* Gallery.swift */,
+				4391357B2BD9813200D5FDEC /* LoadingView.swift */,
+				43BE19B12BDBE18000292729 /* RotatedView.swift */,
 				431D5C192BD7CF2500F66630 /* Assets.xcassets */,
 				431D5C1B2BD7CF2500F66630 /* Preview Content */,
 			);
@@ -145,6 +148,7 @@
 			files = (
 				431D5C182BD7CF2300F66630 /* ContentView.swift in Sources */,
 				4391357C2BD9813200D5FDEC /* LoadingView.swift in Sources */,
+				43BE19B22BDBE18000292729 /* RotatedView.swift in Sources */,
 				439135762BD9509C00D5FDEC /* Gallery.swift in Sources */,
 				431D5C162BD7CF2300F66630 /* mobile_devApp.swift in Sources */,
 			);

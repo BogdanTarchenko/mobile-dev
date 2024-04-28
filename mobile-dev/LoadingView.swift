@@ -48,6 +48,7 @@ struct BottomPanelButton: View {
 
 struct LoadingView: View {
     var selectedImageData: Data?
+    @State private var rotationCount = 0
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
@@ -94,12 +95,21 @@ struct LoadingView: View {
                 
                 // SelectedImageView
                 if let imageData = selectedImageData,
-                   let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity, maxHeight: 400)
-                        .padding()
+                   var uiImage = UIImage(data: imageData){
+                    var rotatedView = RotatedView(image: uiImage)
+                    if rotationCount % 4 == 0 {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding()
+                    }
+                    else {
+                        var rotatedImage = rotatedView.rotateImage(uiImage)
+                        Image(uiImage: rotatedImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding()
+                    }
                 }
                 
                 else {
@@ -118,6 +128,7 @@ struct LoadingView: View {
                         
                         Button(action:{
                             // Turn
+                            rotationCount += 1
                         }) {
                             BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Turn")
                         }
