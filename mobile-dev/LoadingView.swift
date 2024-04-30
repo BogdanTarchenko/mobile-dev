@@ -48,6 +48,8 @@ struct BottomPanelButton: View {
 
 struct LoadingView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
+    @State private var sliderValue: Double = 1
+    @State private var resizeSelect = false
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
@@ -106,6 +108,37 @@ struct LoadingView: View {
                         .padding(.top, 150)
                 }
                 
+                Spacer()
+                
+                if resizeSelect {
+                    VStack {
+                        Slider(value: $sliderValue, in: 0.5...2, step: 0.1)
+                            .accentColor(.gray)
+                            .padding()
+                            .onChange(of: sliderValue) { newValue in
+                                editImageViewModel.sliderValue = newValue
+                            }
+                        
+                        Text("Scaling: \(sliderValue, specifier: "%.2f")x")
+                            .foregroundColor(.white)
+                            .font(Font.system(size: 17).weight(.light))
+                            .padding()
+                        Button(action:{
+                            // Save
+                            editImageViewModel.resizeImage()
+                        }) {
+                            Text("Resize and save")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 18).weight(.medium))
+                                .frame(width: 180, height: 60)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
                 // Bottom/Scroll button bar
                 ScrollView(.horizontal, showsIndicators: false) {
                     
@@ -128,6 +161,7 @@ struct LoadingView: View {
                         
                         Button(action:{
                             // Resize
+                            resizeSelect = true
                         }) {
                             BottomPanelButton(iconName: "square.resize.up", text: "Resize")
                         }

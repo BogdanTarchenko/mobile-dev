@@ -4,6 +4,7 @@ class EditImageViewModel: ObservableObject {
     @Published var originalImage: UIImage? {
         didSet {
             editedImage = originalImage
+
         }
     }
     
@@ -16,9 +17,18 @@ class EditImageViewModel: ObservableObject {
     }
     
     @Published var editedImage: UIImage?
+    
+    @Published var sliderValue: Double?
         
     func rotateImage() {
         editedImage = RotatedView.rotateImage(originalImage)
         originalImage = editedImage
     }
+    
+    func resizeImage() {
+        editedImage = ResizedView.resizeImage(originalImage, scale: sliderValue)
+        originalImage = editedImage
+    }
+
+
 }

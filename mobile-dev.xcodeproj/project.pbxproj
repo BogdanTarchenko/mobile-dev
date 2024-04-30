@@ -15,6 +15,7 @@
 		4391357C2BD9813200D5FDEC /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4391357B2BD9813200D5FDEC /* LoadingView.swift */; };
 		43BE19B22BDBE18000292729 /* RotatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BE19B12BDBE18000292729 /* RotatedView.swift */; };
 		43E35C412BE1351300D74B1D /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E35C402BE1351300D74B1D /* ViewModel.swift */; };
+		E667C3852BE16116004AF7F2 /* ResizedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E667C3842BE16116004AF7F2 /* ResizedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		4391357B2BD9813200D5FDEC /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		43BE19B12BDBE18000292729 /* RotatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatedView.swift; sourceTree = "<group>"; };
 		43E35C402BE1351300D74B1D /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		E667C3842BE16116004AF7F2 /* ResizedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				439135752BD9509C00D5FDEC /* Gallery.swift */,
 				4391357B2BD9813200D5FDEC /* LoadingView.swift */,
 				43BE19B12BDBE18000292729 /* RotatedView.swift */,
+				E667C3842BE16116004AF7F2 /* ResizedView.swift */,
 				43E35C402BE1351300D74B1D /* ViewModel.swift */,
 				431D5C192BD7CF2500F66630 /* Assets.xcassets */,
 				431D5C1B2BD7CF2500F66630 /* Preview Content */,
@@ -155,6 +158,7 @@
 				439135762BD9509C00D5FDEC /* Gallery.swift in Sources */,
 				43E35C412BE1351300D74B1D /* ViewModel.swift in Sources */,
 				431D5C162BD7CF2300F66630 /* mobile_devApp.swift in Sources */,
+				E667C3852BE16116004AF7F2 /* ResizedView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +289,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"mobile-dev/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -313,6 +318,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"mobile-dev/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
