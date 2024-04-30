@@ -47,8 +47,7 @@ struct BottomPanelButton: View {
 }
 
 struct LoadingView: View {
-    var selectedImageData: Data?
-    @State private var rotationCount = 0
+    @ObservedObject var editImageViewModel: EditImageViewModel
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
@@ -56,7 +55,7 @@ struct LoadingView: View {
                 // Top button bar
                 HStack {
                     
-                    NavigationLink(destination: Gallery()){
+                    NavigationLink(destination: Gallery(editImageViewModel: EditImageViewModel())){
                         TopPanelBackButton(iconName: "chevron.backward")
                     }
                     
@@ -94,29 +93,17 @@ struct LoadingView: View {
                 .padding()
                 
                 // SelectedImageView
-                if let imageData = selectedImageData,
-                   var uiImage = UIImage(data: imageData){
-                    var rotatedView = RotatedView(image: uiImage)
-                    if rotationCount % 4 == 0 {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding()
-                    }
-                    else {
-                        var rotatedImage = rotatedView.rotateImage(uiImage)
-                        Image(uiImage: rotatedImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding()
-                    }
+                if let editedImage = editImageViewModel.editedImage {
+                    Image(uiImage: editedImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding()
                 }
-                
                 else {
                     Text("No image selected")
-                        .font(Font.system(size: 24).weight(.medium))
-                        .frame(maxWidth: 350, maxHeight: 450)
-                        .foregroundColor(.white)
+                        .foregroundColor(.gray)
+                        .font(Font.system(size: 30).weight(.thin))
+                        .padding(.top, 150)
                 }
                 
                 // Bottom/Scroll button bar
@@ -127,10 +114,10 @@ struct LoadingView: View {
                     HStack(spacing: 30) {
                         
                         Button(action:{
-                            // Turn
-                            rotationCount += 1
+                            // Rotate
+                            editImageViewModel.rotateImage()
                         }) {
-                            BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Turn")
+                            BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate")
                         }
                         
                         Button(action:{
@@ -195,6 +182,6 @@ struct LoadingView: View {
 
 struct LoadingView_Previews: PreviewProvider {
     static var previews: some View {
-        LoadingView(selectedImageData: nil)
+        LoadingView(editImageViewModel: EditImageViewModel())
     }
 }

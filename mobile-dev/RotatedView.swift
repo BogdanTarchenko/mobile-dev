@@ -1,11 +1,9 @@
 import SwiftUI
 import CoreGraphics
 
-struct RotatedView {
-    let image: UIImage
-    
-    func rotateImage(_ image: UIImage) -> UIImage {
-        guard let cgImage = image.cgImage
+enum RotatedView {
+    static func rotateImage(_ image: UIImage?) -> UIImage? {
+        guard let cgImage = image?.cgImage
         else {
             return image
         }
