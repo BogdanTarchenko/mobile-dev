@@ -65,16 +65,19 @@ struct LoadingView: View {
                     
                     Button(action:{
                         // Undo
+                        editImageViewModel.undo()
                     }) {
                         TopPanelButton(iconName: "arrow.uturn.backward")
                     }
                     Button(action:{
                         // Clear
+                        editImageViewModel.resetToOriginalImage()
                     }) {
                         TopPanelButton(iconName: "arrow.circlepath")
                     }
                     Button(action:{
                         // Redo
+                        editImageViewModel.redo()
                     }) {
                         TopPanelButton(iconName: "arrow.uturn.forward")
                     }
@@ -127,10 +130,10 @@ struct LoadingView: View {
                             // Save
                             editImageViewModel.resizeImage()
                         }) {
-                            Text("Resize and save")
+                            Text("Resize")
                                 .foregroundColor(.white)
                                 .font(Font.system(size: 18).weight(.medium))
-                                .frame(width: 180, height: 60)
+                                .frame(width: 160, height: 55)
                                 .background(Color.blue)
                                 .cornerRadius(10)
                         }
