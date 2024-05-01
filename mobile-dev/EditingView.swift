@@ -46,10 +46,10 @@ struct BottomPanelButton: View {
     }
 }
 
-struct LoadingView: View {
+struct EditingView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
-    @State private var sliderValue: Double = 1
-    @State private var resizeSelect = false
+    @State private var sliderValue: Double = 1.0
+    @State private var isResizeActive = false
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
@@ -57,7 +57,7 @@ struct LoadingView: View {
                 // Top button bar
                 HStack {
                     
-                    NavigationLink(destination: Gallery(editImageViewModel: EditImageViewModel())){
+                    NavigationLink(destination: GalleryView(editImageViewModel: EditImageViewModel())){
                         TopPanelBackButton(iconName: "chevron.backward")
                     }
                     
@@ -103,6 +103,7 @@ struct LoadingView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .padding()
+                        .frame(maxHeight: 400)
                 }
                 else {
                     Text("No image selected")
@@ -111,23 +112,23 @@ struct LoadingView: View {
                         .padding(.top, 150)
                 }
                 
-                Spacer()
-                
-                if resizeSelect {
+                // Resize UI
+                if isResizeActive {
                     VStack {
                         Slider(value: $sliderValue, in: 0.5...2, step: 0.1)
                             .accentColor(.gray)
-                            .padding()
+                            .padding(.horizontal)
                             .onChange(of: sliderValue) { newValue in
                                 editImageViewModel.sliderValue = newValue
                             }
                         
                         Text("Scaling: \(sliderValue, specifier: "%.2f")x")
-                            .foregroundColor(.white)
-                            .font(Font.system(size: 17).weight(.light))
+                            .foregroundColor(.gray)
+                            .font(Font.system(size: 18).weight(.light))
                             .padding()
+                        
                         Button(action:{
-                            // Save
+                            // Resize UI button
                             editImageViewModel.resizeImage()
                         }) {
                             Text("Resize")
@@ -137,6 +138,7 @@ struct LoadingView: View {
                                 .background(Color.blue)
                                 .cornerRadius(10)
                         }
+                        Spacer()
                     }
                 }
                 
@@ -144,9 +146,6 @@ struct LoadingView: View {
                 
                 // Bottom/Scroll button bar
                 ScrollView(.horizontal, showsIndicators: false) {
-                    
-                    Spacer()
-                    
                     HStack(spacing: 30) {
                         
                         Button(action:{
@@ -164,7 +163,7 @@ struct LoadingView: View {
                         
                         Button(action:{
                             // Resize
-                            resizeSelect = true
+                            isResizeActive = true
                         }) {
                             BottomPanelButton(iconName: "square.resize.up", text: "Resize")
                         }
@@ -206,8 +205,8 @@ struct LoadingView: View {
                         }
                         
                     }
+                    .padding(.horizontal, 30)
                 }
-                .padding(.horizontal, 30)
             }
             .background(Color.black)
         }
@@ -219,6 +218,6 @@ struct LoadingView: View {
 
 struct LoadingView_Previews: PreviewProvider {
     static var previews: some View {
-        LoadingView(editImageViewModel: EditImageViewModel())
+        EditingView(editImageViewModel: EditImageViewModel())
     }
 }

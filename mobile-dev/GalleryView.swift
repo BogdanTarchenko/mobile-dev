@@ -1,7 +1,7 @@
 import SwiftUI
 import PhotosUI
 
-struct Gallery: View {
+struct GalleryView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     @State private var selectedImageData: Data? = nil
     @State private var selectedItem: PhotosPickerItem? = nil
@@ -98,7 +98,7 @@ struct Gallery: View {
                     }
                     Spacer().padding(.leading)
                     Spacer()
-                    NavigationLink(destination: LoadingView(editImageViewModel: editImageViewModel)) {
+                    NavigationLink(destination: EditingView(editImageViewModel: editImageViewModel)) {
                         RoundedRectangle(cornerRadius: 12)
                             .frame(maxWidth: 350, maxHeight: 60)
                             .foregroundColor(Color.blue)
@@ -125,6 +125,7 @@ struct Gallery: View {
                         selectedImageData = data
                         if let uiImage = UIImage(data: selectedImageData!) {
                             editImageViewModel.originalImage = uiImage
+                            editImageViewModel.nonChangedImage = uiImage
                         }
                     }
                 }
@@ -138,6 +139,6 @@ struct Gallery: View {
 
 struct Gallery_Previews: PreviewProvider {
     static var previews: some View {
-        Gallery(editImageViewModel: EditImageViewModel())
+        GalleryView(editImageViewModel: EditImageViewModel())
     }
 }

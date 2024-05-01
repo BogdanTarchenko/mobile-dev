@@ -4,7 +4,7 @@ import SwiftUI
 struct mobile_devApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WelcomeView()
         }
     }
 }

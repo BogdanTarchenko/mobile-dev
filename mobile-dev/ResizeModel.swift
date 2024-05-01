@@ -2,7 +2,6 @@ import SwiftUI
 import CoreGraphics
 
 enum ResizedView {
-    
     static func bilinearInterpolate(pixelData: [UInt8], width: Int, height: Int, x: CGFloat, y: CGFloat, c: Int) -> UInt8 {
             let xInt = Int(x)
             let yInt = Int(y)
@@ -123,8 +122,6 @@ enum ResizedView {
             return image
         }
 
-        
         return UIImage(cgImage: resizedImage)
     }
-
 }

@@ -4,7 +4,6 @@ class EditImageViewModel: ObservableObject {
     @Published var originalImage: UIImage? {
         didSet {
             editedImage = originalImage
-
         }
     }
     
@@ -17,18 +16,20 @@ class EditImageViewModel: ObservableObject {
     }
     
     @Published var editedImage: UIImage?
+    @Published var nonChangedImage: UIImage?
     
     @Published var sliderValue: Double?
     
     private var undoStack: [UIImage] = []
     private var redoStack: [UIImage] = []
     
-    private func saveCurrentImageForUndo() {
+    private func addCurrentImageToChangeListArray() {
         if let currentImage = editedImage {
             undoStack.append(currentImage)
         }
     }
     
+    // Undo
     func undo() {
         guard !undoStack.isEmpty else { return }
         if let lastImage = undoStack.popLast() {
@@ -36,7 +37,8 @@ class EditImageViewModel: ObservableObject {
             editedImage = lastImage
         }
     }
-
+    
+    // Redo
     func redo() {
         guard !redoStack.isEmpty else { return }
         if let redoImage = redoStack.popLast() {
@@ -45,29 +47,30 @@ class EditImageViewModel: ObservableObject {
         }
     }
     
+    // Reset changes
     func resetToOriginalImage() {
-        editedImage = originalImage
+        originalImage = nonChangedImage
+        editedImage = nonChangedImage
         undoStack.removeAll()
         redoStack.removeAll()
     }
 
-        
+    // Filters
     func rotateImage() {
-        saveCurrentImageForUndo()
-        editedImage = RotatedView.rotateImage(originalImage)
-        originalImage = editedImage
+            addCurrentImageToChangeListArray()
+            editedImage = RotatedView.rotateImage(originalImage)
+            originalImage = editedImage
     }
     
     func resizeImage() {
-        saveCurrentImageForUndo()
+        addCurrentImageToChangeListArray()
         editedImage = ResizedView.resizeImage(originalImage, scale: sliderValue)
         originalImage = editedImage
     }
     
+    // Save
     func saveImage() {
-        let image = originalImage ?? UIImage()
+        let image = editedImage ?? UIImage()
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
     }
-
-
 }
