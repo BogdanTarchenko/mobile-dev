@@ -29,6 +29,11 @@ class EditImageViewModel: ObservableObject {
         editedImage = ResizedView.resizeImage(originalImage, scale: sliderValue)
         originalImage = editedImage
     }
+    
+    func saveImage() {
+        let image = originalImage ?? UIImage()
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+    }
 
 
 }

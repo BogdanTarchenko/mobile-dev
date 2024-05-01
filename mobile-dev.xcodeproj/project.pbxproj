@@ -29,6 +29,7 @@
 		43BE19B12BDBE18000292729 /* RotatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatedView.swift; sourceTree = "<group>"; };
 		43E35C402BE1351300D74B1D /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		E667C3842BE16116004AF7F2 /* ResizedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizedView.swift; sourceTree = "<group>"; };
+		E6B087CC2BE20BB1004B4804 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +62,7 @@
 		431D5C142BD7CF2300F66630 /* mobile-dev */ = {
 			isa = PBXGroup;
 			children = (
+				E6B087CC2BE20BB1004B4804 /* Info.plist */,
 				431D5C152BD7CF2300F66630 /* mobile_devApp.swift */,
 				431D5C172BD7CF2300F66630 /* ContentView.swift */,
 				439135752BD9509C00D5FDEC /* Gallery.swift */,
@@ -289,6 +291,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"mobile-dev/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "mobile-dev/Info.plist";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -318,6 +321,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"mobile-dev/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "mobile-dev/Info.plist";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

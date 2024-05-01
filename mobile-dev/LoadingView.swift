@@ -82,7 +82,7 @@ struct LoadingView: View {
                     Spacer()
                     
                     Button(action:{
-                        // Save
+                        editImageViewModel.saveImage()
                     }) {
                         Text("Save")
                             .foregroundColor(.white)

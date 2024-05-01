@@ -84,7 +84,7 @@ enum ResizedView {
             return image
         }
 
-        UIImageWriteToSavedPhotosAlbum(UIImage(cgImage: resizedImage), nil, nil, nil)
+        
         return UIImage(cgImage: resizedImage)
     }
 
