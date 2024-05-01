@@ -14,6 +14,7 @@
 		439135762BD9509C00D5FDEC /* Gallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439135752BD9509C00D5FDEC /* Gallery.swift */; };
 		4391357C2BD9813200D5FDEC /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4391357B2BD9813200D5FDEC /* LoadingView.swift */; };
 		43BE19B22BDBE18000292729 /* RotatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BE19B12BDBE18000292729 /* RotatedView.swift */; };
+		B1A897622BE018D000741B98 /* FiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A897612BE018D000741B98 /* FiltersView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		439135752BD9509C00D5FDEC /* Gallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gallery.swift; sourceTree = "<group>"; };
 		4391357B2BD9813200D5FDEC /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		43BE19B12BDBE18000292729 /* RotatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatedView.swift; sourceTree = "<group>"; };
+		B1A897612BE018D000741B98 /* FiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				439135752BD9509C00D5FDEC /* Gallery.swift */,
 				4391357B2BD9813200D5FDEC /* LoadingView.swift */,
 				43BE19B12BDBE18000292729 /* RotatedView.swift */,
+				B1A897612BE018D000741B98 /* FiltersView.swift */,
 				431D5C192BD7CF2500F66630 /* Assets.xcassets */,
 				431D5C1B2BD7CF2500F66630 /* Preview Content */,
 			);
@@ -150,6 +153,7 @@
 				4391357C2BD9813200D5FDEC /* LoadingView.swift in Sources */,
 				43BE19B22BDBE18000292729 /* RotatedView.swift in Sources */,
 				439135762BD9509C00D5FDEC /* Gallery.swift in Sources */,
+				B1A897622BE018D000741B98 /* FiltersView.swift in Sources */,
 				431D5C162BD7CF2300F66630 /* mobile_devApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -49,6 +49,7 @@ struct BottomPanelButton: View {
 struct LoadingView: View {
     var selectedImageData: Data?
     @State private var rotationCount = 0
+    @State private var negativeFilter = false
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
@@ -97,6 +98,14 @@ struct LoadingView: View {
                 if let imageData = selectedImageData,
                    var uiImage = UIImage(data: imageData){
                     var rotatedView = RotatedView(image: uiImage)
+                    var negativeView = FiltersView(image: uiImage)
+                    if negativeFilter {
+                        var mosaicImage = negativeView.applyMedianFilter(uiImage)
+                        Image(uiImage: mosaicImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding()
+                    }
                     if rotationCount % 4 == 0 {
                         Image(uiImage: uiImage)
                             .resizable()
@@ -135,6 +144,7 @@ struct LoadingView: View {
                         
                         Button(action:{
                             // Filter
+                            negativeFilter = true;
                         }) {
                             BottomPanelButton(iconName: "camera.filters", text: "Filter")
                         }
