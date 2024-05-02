@@ -1,39 +1,43 @@
 import SwiftUI
 import CoreGraphics
 
-enum ResizedView {
+enum ResizeModel {
     static func bilinearInterpolate(pixelData: [UInt8], width: Int, height: Int, x: CGFloat, y: CGFloat, c: Int) -> UInt8 {
-            let xInt = Int(x)
-            let yInt = Int(y)
+        let xInt = Int(x)
+        let yInt = Int(y)
 
-            let xFract = x - CGFloat(xInt)
-            let yFract = y - CGFloat(yInt)
+        let xFract = x - CGFloat(xInt)
+        let yFract = y - CGFloat(yInt)
 
-            let indexTL = ((yInt * width + xInt) * 4) + c
-            let indexTR = ((yInt * width + min(xInt + 1, width - 1)) * 4) + c
-            let indexBL = ((min(yInt + 1, height - 1) * width + xInt) * 4) + c
-            let indexBR = ((min(yInt + 1, height - 1) * width + min(xInt + 1, width - 1)) * 4) + c
+        let indexTL = ((yInt * width + xInt) * 4) + c
+        let indexTR = ((yInt * width + min(xInt + 1, width - 1)) * 4) + c
+        let indexBL = ((min(yInt + 1, height - 1) * width + xInt) * 4) + c
+        let indexBR = ((min(yInt + 1, height - 1) * width + min(xInt + 1, width - 1)) * 4) + c
 
-            let topLeft = CGFloat(pixelData[indexTL])
-            let topRight = CGFloat(pixelData[indexTR])
-            let bottomLeft = CGFloat(pixelData[indexBL])
-            let bottomRight = CGFloat(pixelData[indexBR])
+        let topLeft = CGFloat(pixelData[indexTL])
+        let topRight = CGFloat(pixelData[indexTR])
+        let bottomLeft = CGFloat(pixelData[indexBL])
+        let bottomRight = CGFloat(pixelData[indexBR])
 
-            let top = (1 - xFract) * topLeft + xFract * topRight
-            let bottom = (1 - xFract) * bottomLeft + xFract * bottomRight
+        let top = (1 - xFract) * topLeft + xFract * topRight
+        let bottom = (1 - xFract) * bottomLeft + xFract * bottomRight
 
-            let result = (1 - yFract) * top + yFract * bottom
+        let result = (1 - yFract) * top + yFract * bottom
 
-            return UInt8(max(0, min(255, result.rounded())))
+        return UInt8(max(0, min(255, result.rounded())))
+    }
+
+    static func trilinearInterpolate(pixelData1: [UInt8], pixelData2: [UInt8], width: Int, height: Int, x: CGFloat, y: CGFloat, mip: CGFloat, c: Int) -> UInt8 {
+            let result1 = bilinearInterpolate(pixelData: pixelData1, width: width, height: height, x: x, y: y, c: c)
+            let result2 = bilinearInterpolate(pixelData: pixelData2, width: width, height: height, x: x, y: y, c: c)
+            
+            let mipFract = mip - CGFloat(Int(mip))
+            let finalResult = (1 - mipFract) * CGFloat(result1) + mipFract * CGFloat(result2)
+
+            return UInt8(max(0, min(255, finalResult.rounded())))
         }
 
-    static func trilinearInterpolate(pixelData: [UInt8], width: Int, height: Int, x: CGFloat, y: CGFloat, zScale: CGFloat, c: Int) -> UInt8 {
-            let bilinearResult = bilinearInterpolate(pixelData: pixelData, width: width, height: height, x: x, y: y, c: c)
-            let scaledResult = CGFloat(bilinearResult) * zScale + CGFloat(bilinearResult) * (1 - zScale)
-            return UInt8(max(0, min(255, scaledResult.rounded())))
-        }
-
-
+    
 
     static func applyBoxBlur(pixelData: inout [UInt8], width: Int, height: Int, radius: Int) {
         var tempPixelData = pixelData
@@ -67,13 +71,11 @@ enum ResizedView {
         pixelData = tempPixelData
     }
 
-
-
     static func resizeImage(_ image: UIImage?, scale: Double?, zScale: CGFloat = 2.0) -> UIImage? {
         guard let cgImage = image?.cgImage else {
             return image
         }
-        
+
         guard let scale = scale else {
             return image
         }
@@ -93,28 +95,19 @@ enum ResizedView {
         let newHeight = Int(CGFloat(height) * CGFloat(scale))
         var resizedPixelData: [UInt8] = Array(repeating: 0, count: newWidth * newHeight * 4)
 
-        if scale > 1 {
-            for y in 0..<newHeight {
-                for x in 0..<newWidth {
-                    let sourceIndex = (x + y * newWidth) * 4
-                    for c in 0..<4 {
+        DispatchQueue.concurrentPerform(iterations: newHeight) { y in
+            for x in 0..<newWidth {
+                let sourceIndex = (x + y * newWidth) * 4
+                for c in 0..<4 {
+                    if scale > 1 {
                         resizedPixelData[sourceIndex + c] = bilinearInterpolate(pixelData: pixelData, width: width, height: height, x: CGFloat(x) / CGFloat(scale), y: CGFloat(y) / CGFloat(scale), c: c)
+                    } else {
+                        resizedPixelData[sourceIndex + c] = trilinearInterpolate(pixelData1: pixelData, pixelData2: pixelData, width: width, height: height, x: CGFloat(x) / CGFloat(scale), y: CGFloat(y) / CGFloat(scale), mip: CGFloat(scale), c: c)
                     }
                 }
             }
         }
-        else{
-            for y in 0..<newHeight {
-                        for x in 0..<newWidth {
-                            let sourceIndex = (x + y * newWidth) * 4
-                            for c in 0..<4 {
-                                resizedPixelData[sourceIndex + c] = trilinearInterpolate(pixelData: pixelData, width: width, height: height, x: CGFloat(x) / CGFloat(scale), y: CGFloat(y) / CGFloat(scale), zScale: zScale, c: c)
-                            }
-                        }
-                    }
-        }
-    
-        
+
         applyBoxBlur(pixelData: &resizedPixelData, width: newWidth, height: newHeight, radius: 1)
 
         guard let resizedContext = CGContext(data: &resizedPixelData, width: newWidth, height: newHeight, bitsPerComponent: 8, bytesPerRow: newWidth * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),

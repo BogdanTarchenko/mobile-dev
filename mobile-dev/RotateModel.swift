@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreGraphics
 
-enum RotatedView {
+enum RotateModel {
     static func rotateImage(_ image: UIImage?) -> UIImage? {
         guard let cgImage = image?.cgImage
         else {
@@ -21,7 +21,8 @@ enum RotatedView {
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         var rotatedPixelData = [UInt8](repeating: 0, count: width * height * 4)
-        for y in 0..<height {
+        
+        DispatchQueue.concurrentPerform(iterations: height) { y in
             for x in 0..<width {
                 let sourceIndex = (x + y * width) * 4
                 

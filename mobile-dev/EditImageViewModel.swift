@@ -34,6 +34,7 @@ class EditImageViewModel: ObservableObject {
         guard !undoStack.isEmpty else { return }
         if let lastImage = undoStack.popLast() {
             redoStack.append(editedImage ?? UIImage())
+            originalImage = lastImage
             editedImage = lastImage
         }
     }
@@ -43,6 +44,7 @@ class EditImageViewModel: ObservableObject {
         guard !redoStack.isEmpty else { return }
         if let redoImage = redoStack.popLast() {
             undoStack.append(editedImage ?? UIImage())
+            originalImage = redoImage
             editedImage = redoImage
         }
     }
@@ -58,13 +60,13 @@ class EditImageViewModel: ObservableObject {
     // Filters
     func rotateImage() {
             addCurrentImageToChangeListArray()
-            editedImage = RotatedView.rotateImage(originalImage)
+            editedImage = RotateModel.rotateImage(originalImage)
             originalImage = editedImage
     }
     
     func resizeImage() {
         addCurrentImageToChangeListArray()
-        editedImage = ResizedView.resizeImage(originalImage, scale: sliderValue)
+        editedImage = ResizeModel.resizeImage(originalImage, scale: sliderValue)
         originalImage = editedImage
     }
     
