@@ -31,25 +31,100 @@ struct TopPanelButton: View {
 struct BottomPanelButton: View {
     let iconName: String
     let text: String
+    let isActive: Bool
     
     var body: some View {
         VStack {
             Image(systemName: iconName)
                 .font(.system(size: 25))
-                .foregroundColor(.gray)
+                .foregroundColor(isActive ? .blue : .gray)
                 .font(Font.system(size: 16).weight(.medium))
                 .frame(width: 30, height: 30)
             Text(text)
-                .foregroundColor(.gray)
+                .foregroundColor(isActive ? .blue : .gray)
                 .font(Font.system(size: 17).weight(.light))
         }
     }
 }
 
-struct EditingView: View {
+struct ResizeUI: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     @State private var sliderValue: Double = 1.0
+    var resizeAction: (() -> Void)?
+    
+    var body: some View {
+        VStack {
+            Slider(value: $sliderValue, in: 0.5...2, step: 0.1)
+                .accentColor(.gray)
+                .padding(.horizontal)
+                .onChange(of: sliderValue) { newValue in
+                    editImageViewModel.sliderValue = newValue
+                }
+            
+            Text("Scaling: \(sliderValue, specifier: "%.2f")x")
+                .foregroundColor(.gray)
+                .font(Font.system(size: 18).weight(.light))
+                .padding()
+            
+            Button(action:{
+                // Resize UI button
+                resizeAction?()
+            }) {
+                Text("Resize")
+                    .foregroundColor(.white)
+                    .font(Font.system(size: 18).weight(.medium))
+                    .frame(width: 160, height: 55)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+            }
+            Spacer()
+        }
+    }
+}
+
+struct FiltersUI: View {
+    @ObservedObject var editImageViewModel: EditImageViewModel
+    var negativeAction: (() -> Void)?
+    var mosaicAction: (() -> Void)?
+    var medianAction: (() -> Void)?
+    
+    var body: some View {
+        HStack {
+            Button(action:{
+                // Negative
+                 negativeAction?()
+            }) {
+                BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
+            }
+            
+            Spacer()
+            
+            Button(action:{
+                // Mosaic
+                mosaicAction?()
+            }) {
+                BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
+            }
+            
+            Spacer()
+            
+            Button(action:{
+                // Median
+                medianAction?()
+            }) {
+                BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
+            }
+        }
+        .padding(.horizontal, 30)
+    }
+}
+
+struct EditingView: View {
+    @ObservedObject var editImageViewModel: EditImageViewModel
+    
     @State private var isResizeActive = false
+    @State private var isFiltersActive = false
+    
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
@@ -114,32 +189,20 @@ struct EditingView: View {
                 
                 // Resize UI
                 if isResizeActive {
-                    VStack {
-                        Slider(value: $sliderValue, in: 0.5...2, step: 0.1)
-                            .accentColor(.gray)
-                            .padding(.horizontal)
-                            .onChange(of: sliderValue) { newValue in
-                                editImageViewModel.sliderValue = newValue
-                            }
-                        
-                        Text("Scaling: \(sliderValue, specifier: "%.2f")x")
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 18).weight(.light))
-                            .padding()
-                        
-                        Button(action:{
-                            // Resize UI button
-                            editImageViewModel.resizeImage()
-                        }) {
-                            Text("Resize")
-                                .foregroundColor(.white)
-                                .font(Font.system(size: 18).weight(.medium))
-                                .frame(width: 160, height: 55)
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        }
-                        Spacer()
-                    }
+                    ResizeUI(editImageViewModel: editImageViewModel, resizeAction: {
+                        editImageViewModel.resizeImage()
+                    })
+                }
+                
+                // Filters UI
+                if isFiltersActive {
+                    FiltersUI(editImageViewModel: editImageViewModel, negativeAction: {
+                        editImageViewModel.applyNegativeFilter()
+                    }, mosaicAction: {
+                        editImageViewModel.applyMosaicFilter()
+                    }, medianAction: {
+                        editImageViewModel.applyMedianFilter()
+                    })
                 }
                 
                 Spacer()
@@ -152,56 +215,59 @@ struct EditingView: View {
                             // Rotate
                             editImageViewModel.rotateImage()
                         }) {
-                            BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate")
+                            BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: false)
                         }
                         
                         Button(action:{
                             // Filter
+                            isFiltersActive = true
+                            isResizeActive = false
                         }) {
-                            BottomPanelButton(iconName: "camera.filters", text: "Filter")
+                            BottomPanelButton(iconName: "camera.filters", text: "Filter", isActive: isFiltersActive)
                         }
                         
                         Button(action:{
                             // Resize
                             isResizeActive = true
+                            isFiltersActive = false
                         }) {
-                            BottomPanelButton(iconName: "square.resize.up", text: "Resize")
+                            BottomPanelButton(iconName: "square.resize.up", text: "Resize", isActive: isResizeActive)
                         }
                         
                         Button(action:{
                             // Face recognize
                         }) {
-                            BottomPanelButton(iconName: "faceid", text: "Face AI")
+                            BottomPanelButton(iconName: "faceid", text: "Face AI", isActive: false)
                         }
                         
                         Button(action:{
                             // Vector
                         }) {
-                            BottomPanelButton(iconName: "pencil.and.outline", text: "Vector")
+                            BottomPanelButton(iconName: "pencil.and.outline", text: "Vector", isActive: false)
                         }
                         
                         Button(action:{
                             // Retouch
                         }) {
-                            BottomPanelButton(iconName: "wand.and.stars.inverse", text: "Retouch")
+                            BottomPanelButton(iconName: "wand.and.stars.inverse", text: "Retouch", isActive: false)
                         }
                         
                         Button(action:{
                             // Masking
                         }) {
-                            BottomPanelButton(iconName: "theatermasks", text: "Masking")
+                            BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: false)
                         }
                         
                         Button(action:{
                             // Affine
                         }) {
-                            BottomPanelButton(iconName: "slider.vertical.3", text: "Affine")
+                            BottomPanelButton(iconName: "slider.vertical.3", text: "Affine", isActive: false)
                         }
                         
                         Button(action:{
                             // Cube
                         }) {
-                            BottomPanelButton(iconName: "cube.fill", text: "Cube")
+                            BottomPanelButton(iconName: "cube.fill", text: "Cube", isActive: false)
                         }
                         
                     }

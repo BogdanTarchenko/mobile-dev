@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43076F172BE5032C00CAD0C6 /* FiltersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43076F162BE5032C00CAD0C6 /* FiltersModel.swift */; };
 		431D5C162BD7CF2300F66630 /* mobile_devApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431D5C152BD7CF2300F66630 /* mobile_devApp.swift */; };
 		431D5C182BD7CF2300F66630 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431D5C172BD7CF2300F66630 /* WelcomeView.swift */; };
 		431D5C1A2BD7CF2500F66630 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 431D5C192BD7CF2500F66630 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		43076F162BE5032C00CAD0C6 /* FiltersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersModel.swift; sourceTree = "<group>"; };
 		431D5C122BD7CF2300F66630 /* mobile-dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mobile-dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		431D5C152BD7CF2300F66630 /* mobile_devApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mobile_devApp.swift; sourceTree = "<group>"; };
 		431D5C172BD7CF2300F66630 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
@@ -67,9 +69,10 @@
 				431D5C172BD7CF2300F66630 /* WelcomeView.swift */,
 				439135752BD9509C00D5FDEC /* GalleryView.swift */,
 				4391357B2BD9813200D5FDEC /* EditingView.swift */,
+				43E35C402BE1351300D74B1D /* EditImageViewModel.swift */,
 				43BE19B12BDBE18000292729 /* RotateModel.swift */,
 				E667C3842BE16116004AF7F2 /* ResizeModel.swift */,
-				43E35C402BE1351300D74B1D /* EditImageViewModel.swift */,
+				43076F162BE5032C00CAD0C6 /* FiltersModel.swift */,
 				431D5C192BD7CF2500F66630 /* Assets.xcassets */,
 				431D5C1B2BD7CF2500F66630 /* Preview Content */,
 			);
@@ -161,6 +164,7 @@
 				43E35C412BE1351300D74B1D /* EditImageViewModel.swift in Sources */,
 				431D5C162BD7CF2300F66630 /* mobile_devApp.swift in Sources */,
 				E667C3852BE16116004AF7F2 /* ResizeModel.swift in Sources */,
+				43076F172BE5032C00CAD0C6 /* FiltersModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

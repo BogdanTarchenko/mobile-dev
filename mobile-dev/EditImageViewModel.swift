@@ -70,6 +70,24 @@ class EditImageViewModel: ObservableObject {
         originalImage = editedImage
     }
     
+    func applyNegativeFilter() {
+        addCurrentImageToChangeListArray()
+        editedImage = FiltersModel.applyNegativeFilter(originalImage)
+        originalImage = editedImage
+    }
+    
+    func applyMosaicFilter() {
+        addCurrentImageToChangeListArray()
+        editedImage = FiltersModel.applyMosaicFilter(originalImage)
+        originalImage = editedImage
+    }
+    
+    func applyMedianFilter() {
+        addCurrentImageToChangeListArray()
+        editedImage = FiltersModel.applyMedianFilter(originalImage)
+        originalImage = editedImage
+    }
+    
     // Save
     func saveImage() {
         let image = editedImage ?? UIImage()

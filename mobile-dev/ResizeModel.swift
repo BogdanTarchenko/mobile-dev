@@ -84,6 +84,8 @@ enum ResizeModel {
         let height = cgImage.height
 
         var pixelData: [UInt8] = Array(repeating: 0, count: width * height * 4)
+        
+        applyBoxBlur(pixelData: &pixelData, width: width, height: height, radius: 1)
 
         guard let context = CGContext(data: &pixelData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
             return image
@@ -107,8 +109,6 @@ enum ResizeModel {
                 }
             }
         }
-
-        applyBoxBlur(pixelData: &resizedPixelData, width: newWidth, height: newHeight, radius: 1)
 
         guard let resizedContext = CGContext(data: &resizedPixelData, width: newWidth, height: newHeight, bitsPerComponent: 8, bytesPerRow: newWidth * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
               let resizedImage = resizedContext.makeImage() else {
