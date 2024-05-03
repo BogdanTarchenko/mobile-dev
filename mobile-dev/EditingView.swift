@@ -49,19 +49,19 @@ struct BottomPanelButton: View {
 
 struct ResizeUI: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
-    @State private var sliderValue: Double = 1.0
+    @State private var resizeSliderValue: Double = 1.0
     var resizeAction: (() -> Void)?
     
     var body: some View {
         VStack {
-            Slider(value: $sliderValue, in: 0.5...2, step: 0.1)
+            Slider(value: $resizeSliderValue, in: 0.5...2, step: 0.1)
                 .accentColor(.gray)
                 .padding(.horizontal)
-                .onChange(of: sliderValue) { newValue in
-                    editImageViewModel.sliderValue = newValue
+                .onChange(of: resizeSliderValue) { newValue in
+                    editImageViewModel.resizeSliderValue = newValue
                 }
             
-            Text("Scaling: \(sliderValue, specifier: "%.2f")x")
+            Text("Scaling: \(resizeSliderValue, specifier: "%.2f")x")
                 .foregroundColor(.gray)
                 .font(Font.system(size: 18).weight(.light))
                 .padding()
@@ -92,7 +92,7 @@ struct FiltersUI: View {
         HStack {
             Button(action:{
                 // Negative
-                 negativeAction?()
+                negativeAction?()
             }) {
                 BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
             }
@@ -173,18 +173,41 @@ struct EditingView: View {
                 .padding()
                 
                 // SelectedImageView
-                if let editedImage = editImageViewModel.editedImage {
-                    Image(uiImage: editedImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding()
-                        .frame(maxHeight: 400)
-                }
-                else {
-                    Text("No image selected")
-                        .foregroundColor(.gray)
-                        .font(Font.system(size: 30).weight(.thin))
-                        .padding(.top, 150)
+                if editImageViewModel.isProcessing {
+                    ZStack {
+                        if let editedImage = editImageViewModel.editedImage {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .scaleEffect(2)
+                                .foregroundColor(.white)
+                            Image(uiImage: editedImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .padding()
+                                .frame(maxHeight: 400)
+                                .foregroundColor(.black)
+                                .opacity(0.5)
+                                .blur(radius: 5)
+                        } else {
+                            Text("No image selected")
+                                .foregroundColor(.gray)
+                                .font(Font.system(size: 30).weight(.thin))
+                                .padding(.top, 150)
+                        }
+                    }
+                } else {
+                    if let editedImage = editImageViewModel.editedImage {
+                        Image(uiImage: editedImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding()
+                            .frame(maxHeight: 400)
+                    } else {
+                        Text("No image selected")
+                            .foregroundColor(.gray)
+                            .font(Font.system(size: 30).weight(.thin))
+                            .padding(.top, 150)
+                    }
                 }
                 
                 // Resize UI

@@ -1,6 +1,7 @@
 import SwiftUI
 
 class EditImageViewModel: ObservableObject {
+    
     @Published var originalImage: UIImage? {
         didSet {
             editedImage = originalImage
@@ -18,10 +19,14 @@ class EditImageViewModel: ObservableObject {
     @Published var editedImage: UIImage?
     @Published var nonChangedImage: UIImage?
     
-    @Published var sliderValue: Double?
+    @Published var resizeSliderValue: Double?
     
     private var undoStack: [UIImage] = []
     private var redoStack: [UIImage] = []
+    
+    private let imageProcessingQueue = DispatchQueue(label: "imageProcessing", qos: .userInitiated, attributes: .concurrent)
+    
+    @Published var isProcessing = false
     
     private func addCurrentImageToChangeListArray() {
         if let currentImage = editedImage {
@@ -59,33 +64,78 @@ class EditImageViewModel: ObservableObject {
 
     // Filters
     func rotateImage() {
-            addCurrentImageToChangeListArray()
-            editedImage = RotateModel.rotateImage(originalImage)
-            originalImage = editedImage
+        isProcessing = true
+        addCurrentImageToChangeListArray()
+        
+        imageProcessingQueue.async {
+            let rotatedImage = RotateModel.rotateImage(self.originalImage)
+            
+            DispatchQueue.main.async {
+                self.originalImage = rotatedImage
+                self.editedImage = rotatedImage
+                self.isProcessing = false
+            }
+        }
     }
     
     func resizeImage() {
+        isProcessing = true
         addCurrentImageToChangeListArray()
-        editedImage = ResizeModel.resizeImage(originalImage, scale: sliderValue)
-        originalImage = editedImage
+        
+        imageProcessingQueue.async {
+            let resizedImage = ResizeModel.resizeImage(self.originalImage, scale: self.resizeSliderValue)
+            
+            DispatchQueue.main.async {
+                self.originalImage = resizedImage
+                self.editedImage = resizedImage
+                self.isProcessing = false
+            }
+        }
     }
     
     func applyNegativeFilter() {
+        isProcessing = true
         addCurrentImageToChangeListArray()
-        editedImage = FiltersModel.applyNegativeFilter(originalImage)
-        originalImage = editedImage
+        
+        imageProcessingQueue.async {
+            let filteredImage = FiltersModel.applyNegativeFilter(self.originalImage)
+            
+            DispatchQueue.main.async {
+                self.originalImage = filteredImage
+                self.editedImage = filteredImage
+                self.isProcessing = false
+            }
+        }
     }
     
     func applyMosaicFilter() {
+        isProcessing = true
         addCurrentImageToChangeListArray()
-        editedImage = FiltersModel.applyMosaicFilter(originalImage)
-        originalImage = editedImage
+        
+        imageProcessingQueue.async {
+            let filteredImage = FiltersModel.applyMosaicFilter(self.originalImage)
+            
+            DispatchQueue.main.async {
+                self.originalImage = filteredImage
+                self.editedImage = filteredImage
+                self.isProcessing = false
+            }
+        }
     }
     
     func applyMedianFilter() {
+        isProcessing = true
         addCurrentImageToChangeListArray()
-        editedImage = FiltersModel.applyMedianFilter(originalImage)
-        originalImage = editedImage
+        
+        imageProcessingQueue.async {
+            let filteredImage = FiltersModel.applyMedianFilter(self.originalImage)
+            
+            DispatchQueue.main.async {
+                self.originalImage = filteredImage
+                self.editedImage = filteredImage
+                self.isProcessing = false
+            }
+        }
     }
     
     // Save
