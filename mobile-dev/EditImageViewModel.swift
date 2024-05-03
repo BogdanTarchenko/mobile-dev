@@ -20,6 +20,8 @@ class EditImageViewModel: ObservableObject {
     @Published var nonChangedImage: UIImage?
     
     @Published var resizeSliderValue: Double?
+    @Published var mosaicSliderValue: Int?
+    @Published var rotateSliderValue: Int?
     
     private var undoStack: [UIImage] = []
     private var redoStack: [UIImage] = []
@@ -68,10 +70,9 @@ class EditImageViewModel: ObservableObject {
         addCurrentImageToChangeListArray()
         
         imageProcessingQueue.async {
-            let rotatedImage = RotateModel.rotateImage(self.originalImage)
+            let rotatedImage = RotateModel.rotateImage(self.originalImage, byAngle: self.rotateSliderValue)
             
             DispatchQueue.main.async {
-                self.originalImage = rotatedImage
                 self.editedImage = rotatedImage
                 self.isProcessing = false
             }
@@ -113,7 +114,7 @@ class EditImageViewModel: ObservableObject {
         addCurrentImageToChangeListArray()
         
         imageProcessingQueue.async {
-            let filteredImage = FiltersModel.applyMosaicFilter(self.originalImage)
+            let filteredImage = FiltersModel.applyMosaicFilter(self.originalImage, blockSize: self.mosaicSliderValue)
             
             DispatchQueue.main.async {
                 self.originalImage = filteredImage

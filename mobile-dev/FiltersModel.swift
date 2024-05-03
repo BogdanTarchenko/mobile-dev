@@ -40,8 +40,8 @@ enum FiltersModel {
     }
     
     // Mosaic
-    static func applyMosaicFilter(_ image: UIImage?) -> UIImage? {
-        guard let cgImage = image?.cgImage else {
+    static func applyMosaicFilter(_ image: UIImage?, blockSize: Int?) -> UIImage? {
+        guard let cgImage = image?.cgImage, let blockSize = blockSize else {
             return image
         }
         
@@ -57,7 +57,6 @@ enum FiltersModel {
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         var mosaicPixelData = [UInt8](repeating: 0, count: width * height * 4)
-        let blockSize = 14
         
         DispatchQueue.concurrentPerform(iterations: height) { y in
             for x in 0..<width {

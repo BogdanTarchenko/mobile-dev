@@ -47,13 +47,52 @@ struct BottomPanelButton: View {
     }
 }
 
+struct RotateUI: View {
+    @ObservedObject var editImageViewModel: EditImageViewModel
+    @State private var rotateSliderValue: Int = 90
+    var rotateAction: (() -> Void)?
+    
+    var body: some View {
+        
+        Slider(value: Binding<Double>(
+            get: { Double(rotateSliderValue) },
+            set: { newValue in rotateSliderValue = Int(newValue) }
+        ), in: 0...360, step: 1)
+        .accentColor(.gray)
+        .padding(.horizontal)
+        .onChange(of: rotateSliderValue) { newValue in
+            editImageViewModel.rotateSliderValue = newValue
+        }
+        .onAppear {
+            editImageViewModel.rotateSliderValue = rotateSliderValue
+        }
+            
+        Text("Angle: \(rotateSliderValue)°")
+            .foregroundColor(.gray)
+            .font(Font.system(size: 18).weight(.light))
+            .padding()
+        
+        Button(action:{
+            // Resize UI button
+            rotateAction?()
+        }) {
+            Text("Rotate")
+                .foregroundColor(.white)
+                .font(Font.system(size: 18).weight(.medium))
+                .frame(width: 160, height: 55)
+                .background(Color.blue)
+                .cornerRadius(10)
+        }
+        Spacer()
+    }
+}
+
 struct ResizeUI: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     @State private var resizeSliderValue: Double = 1.0
     var resizeAction: (() -> Void)?
     
     var body: some View {
-        VStack {
             Slider(value: $resizeSliderValue, in: 0.5...2, step: 0.1)
                 .accentColor(.gray)
                 .padding(.horizontal)
@@ -78,50 +117,71 @@ struct ResizeUI: View {
                     .cornerRadius(10)
             }
             Spacer()
-        }
     }
 }
 
 struct FiltersUI: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
+    @State private var mosaicSliderValue: Int = 3
     var negativeAction: (() -> Void)?
     var mosaicAction: (() -> Void)?
     var medianAction: (() -> Void)?
     
     var body: some View {
-        HStack {
-            Button(action:{
-                // Negative
-                negativeAction?()
-            }) {
-                BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
+            HStack {
+                Button(action:{
+                    // Negative
+                    negativeAction?()
+                }) {
+                    BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Mosaic
+                    mosaicAction?()
+                }) {
+                    BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Median
+                    medianAction?()
+                }) {
+                    BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
+                }
             }
-            
-            Spacer()
-            
-            Button(action:{
-                // Mosaic
-                mosaicAction?()
-            }) {
-                BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
-            }
-            
-            Spacer()
-            
-            Button(action:{
-                // Median
-                medianAction?()
-            }) {
-                BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
-            }
+            .padding(.horizontal, 30)
+        
+        Spacer()
+        
+        Slider(value: Binding<Double>(
+            get: { Double(mosaicSliderValue) },
+            set: { newValue in mosaicSliderValue = Int(newValue) }
+        ), in: 3...15, step: 1)
+        .accentColor(.gray)
+        .padding(.horizontal)
+        .onChange(of: mosaicSliderValue) { newValue in
+            editImageViewModel.mosaicSliderValue = newValue
         }
-        .padding(.horizontal, 30)
+        .onAppear {
+            editImageViewModel.mosaicSliderValue = mosaicSliderValue
+        }
+            
+        Text("Mosaic block size: \(mosaicSliderValue)px")
+            .foregroundColor(.gray)
+            .font(Font.system(size: 18).weight(.light))
+            .padding()
     }
 }
 
 struct EditingView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     
+    @State private var isRotateActive = false
     @State private var isResizeActive = false
     @State private var isFiltersActive = false
     
@@ -209,6 +269,12 @@ struct EditingView: View {
                             .padding(.top, 150)
                     }
                 }
+                // Rotate UI
+                if isRotateActive {
+                    RotateUI(editImageViewModel: editImageViewModel, rotateAction: {
+                        editImageViewModel.rotateImage()
+                    })
+                }
                 
                 // Resize UI
                 if isResizeActive {
@@ -236,15 +302,19 @@ struct EditingView: View {
                         
                         Button(action:{
                             // Rotate
+                            isRotateActive = true
+                            isFiltersActive = false
+                            isResizeActive = false
                             editImageViewModel.rotateImage()
                         }) {
-                            BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: false)
+                            BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: isRotateActive)
                         }
                         
                         Button(action:{
                             // Filter
                             isFiltersActive = true
                             isResizeActive = false
+                            isRotateActive = false
                         }) {
                             BottomPanelButton(iconName: "camera.filters", text: "Filter", isActive: isFiltersActive)
                         }
@@ -253,6 +323,7 @@ struct EditingView: View {
                             // Resize
                             isResizeActive = true
                             isFiltersActive = false
+                            isRotateActive = false
                         }) {
                             BottomPanelButton(iconName: "square.resize.up", text: "Resize", isActive: isResizeActive)
                         }
