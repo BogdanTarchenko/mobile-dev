@@ -1,71 +1,120 @@
 import SwiftUI
 import CoreGraphics
 
-enum ResizedView {
+enum ResizeModel {
     static func bilinearInterpolate(pixelData: [UInt8], width: Int, height: Int, x: CGFloat, y: CGFloat, c: Int) -> UInt8 {
-            let xInt = Int(x)
-            let yInt = Int(y)
+        let xInt = Int(x)
+        let yInt = Int(y)
 
-            let xFract = x - CGFloat(xInt)
-            let yFract = y - CGFloat(yInt)
+        let xFract = x - CGFloat(xInt)
+        let yFract = y - CGFloat(yInt)
 
-            let indexTL = ((yInt * width + xInt) * 4) + c
-            let indexTR = ((yInt * width + min(xInt + 1, width - 1)) * 4) + c
-            let indexBL = ((min(yInt + 1, height - 1) * width + xInt) * 4) + c
-            let indexBR = ((min(yInt + 1, height - 1) * width + min(xInt + 1, width - 1)) * 4) + c
+        let indexTL = ((yInt * width + xInt) * 4) + c
+        let indexTR = ((yInt * width + min(xInt + 1, width - 1)) * 4) + c
+        let indexBL = ((min(yInt + 1, height - 1) * width + xInt) * 4) + c
+        let indexBR = ((min(yInt + 1, height - 1) * width + min(xInt + 1, width - 1)) * 4) + c
 
-            let topLeft = CGFloat(pixelData[indexTL])
-            let topRight = CGFloat(pixelData[indexTR])
-            let bottomLeft = CGFloat(pixelData[indexBL])
-            let bottomRight = CGFloat(pixelData[indexBR])
+        let topLeft = CGFloat(pixelData[indexTL])
+        let topRight = CGFloat(pixelData[indexTR])
+        let bottomLeft = CGFloat(pixelData[indexBL])
+        let bottomRight = CGFloat(pixelData[indexBR])
 
-            let top = (1 - xFract) * topLeft + xFract * topRight
-            let bottom = (1 - xFract) * bottomLeft + xFract * bottomRight
+        let top = (1 - xFract) * topLeft + xFract * topRight
+        let bottom = (1 - xFract) * bottomLeft + xFract * bottomRight
 
-            let result = (1 - yFract) * top + yFract * bottom
+        let result = (1 - yFract) * top + yFract * bottom
 
-            return UInt8(max(0, min(255, result.rounded())))
+        return UInt8(max(0, min(255, result.rounded())))
+    }
+
+    static func trilinearInterpolate(pixelData1: [UInt8], pixelData2: [UInt8], width: Int, height: Int, x: CGFloat, y: CGFloat, mip: CGFloat, c: Int) -> UInt8 {
+            let result1 = bilinearInterpolate(pixelData: pixelData1, width: width, height: height, x: x, y: y, c: c)
+            let result2 = bilinearInterpolate(pixelData: pixelData2, width: width, height: height, x: x, y: y, c: c)
+            
+            let mipFract = mip - CGFloat(Int(mip))
+            let finalResult = (1 - mipFract) * CGFloat(result1) + mipFract * CGFloat(result2)
+
+            return UInt8(max(0, min(255, finalResult.rounded())))
         }
-
-    static func trilinearInterpolate(pixelData: [UInt8], width: Int, height: Int, x: CGFloat, y: CGFloat, zScale: CGFloat, c: Int) -> UInt8 {
-            let bilinearResult = bilinearInterpolate(pixelData: pixelData, width: width, height: height, x: x, y: y, c: c)
-            let scaledResult = CGFloat(bilinearResult) * zScale + CGFloat(bilinearResult) * (1 - zScale)
-            return UInt8(max(0, min(255, scaledResult.rounded())))
-        }
-
-
-
-    static func applyBoxBlur(pixelData: inout [UInt8], width: Int, height: Int, radius: Int) {
-        var tempPixelData = pixelData
+    
+    static func gaussianBlur(pixelData: [UInt8], width: Int, height: Int, radius: Int = 1) -> [UInt8] {
+        let kernelSize = 2 * radius + 1
+        let kernel = createGaussianKernel(size: kernelSize, sigma: 1.5)
+        var extendedData = Array(repeating: UInt8(0), count: (width + 2 * radius) * (height + 2 * radius) * 4)
 
         for y in 0..<height {
             for x in 0..<width {
-                var r: Int = 0, g: Int = 0, b: Int = 0
-                var count: Int = 0
-
-                for j in -radius...radius {
-                    for i in -radius...radius {
-                        let px = x + i
-                        let py = y + j
-                        if px >= 0 && px < width && py >= 0 && py < height {
-                            let index = (py * width + px) * 4
-                            r += Int(pixelData[index])
-                            g += Int(pixelData[index + 1])
-                            b += Int(pixelData[index + 2])
-                            count += 1
-                        }
-                    }
+                let indexOriginal = (y * width + x) * 4
+                let indexExtended = ((y + radius) * (width + 2 * radius) + (x + radius)) * 4
+                for c in 0..<4 {
+                    extendedData[indexExtended + c] = pixelData[indexOriginal + c]
                 }
-
-                let newIndex = (y * width + x) * 4
-                tempPixelData[newIndex] = UInt8(r / count)
-                tempPixelData[newIndex + 1] = UInt8(g / count)
-                tempPixelData[newIndex + 2] = UInt8(b / count)
             }
         }
 
-        pixelData = tempPixelData
+        for y in 0..<height + 2 * radius {
+            for x in 0..<width + 2 * radius {
+                if y < radius || y >= height + radius || x < radius || x >= width + radius {
+                    let nearestY = min(max(y, radius), height + radius - 1)
+                    let nearestX = min(max(x, radius), width + radius - 1)
+                    let indexExtended = (y * (width + 2 * radius) + x) * 4
+                    let indexNearest = (nearestY * (width + 2 * radius) + nearestX) * 4
+                    for c in 0..<4 {
+                        extendedData[indexExtended + c] = extendedData[indexNearest + c]
+                    }
+                }
+            }
+        }
+
+        var blurredData = Array(repeating: UInt8(0), count: width * height * 4)
+
+        for y in 0..<height {
+            for x in 0..<width {
+                var sum = [CGFloat](repeating: 0.0, count: 4)
+                for ky in 0..<kernelSize {
+                    let ny = y + ky
+                    for kx in 0..<kernelSize {
+                        let nx = x + kx
+                        let weight = kernel[ky * kernelSize + kx]
+                        let index = (ny * (width + 2 * radius) + nx) * 4
+                        for c in 0..<4 {
+                            sum[c] += CGFloat(extendedData[index + c]) * weight
+                        }
+                    }
+                }
+                let index = (y * width + x) * 4
+                for c in 0..<4 {
+                    blurredData[index + c] = UInt8(min(max(Int(sum[c].rounded()), 0), 255))
+                }
+            }
+        }
+
+        return blurredData
     }
+
+
+        private static func createGaussianKernel(size: Int, sigma: CGFloat) -> [CGFloat] {
+            let center = size / 2
+            var kernel = [CGFloat](repeating: 0, count: size * size)
+            var sum: CGFloat = 0
+
+            for i in 0..<size {
+                for j in 0..<size {
+                    let x = CGFloat(i - center)
+                    let y = CGFloat(j - center)
+                    let exponent = -(x*x + y*y) / (2 * sigma * sigma)
+                    kernel[i * size + j] = exp(exponent)
+                    sum += kernel[i * size + j]
+                }
+            }
+
+            for i in 0..<size*size {
+                kernel[i] /= sum
+            }
+
+            return kernel
+        }
+
 
 
 
@@ -73,7 +122,7 @@ enum ResizedView {
         guard let cgImage = image?.cgImage else {
             return image
         }
-        
+
         guard let scale = scale else {
             return image
         }
@@ -82,6 +131,8 @@ enum ResizedView {
         let height = cgImage.height
 
         var pixelData: [UInt8] = Array(repeating: 0, count: width * height * 4)
+        
+
 
         guard let context = CGContext(data: &pixelData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
             return image
@@ -93,30 +144,22 @@ enum ResizedView {
         let newHeight = Int(CGFloat(height) * CGFloat(scale))
         var resizedPixelData: [UInt8] = Array(repeating: 0, count: newWidth * newHeight * 4)
 
-        if scale > 1 {
-            for y in 0..<newHeight {
-                for x in 0..<newWidth {
-                    let sourceIndex = (x + y * newWidth) * 4
-                    for c in 0..<4 {
+        DispatchQueue.concurrentPerform(iterations: newHeight) { y in
+            for x in 0..<newWidth {
+                let sourceIndex = (x + y * newWidth) * 4
+                for c in 0..<4 {
+                    if scale > 1 {
                         resizedPixelData[sourceIndex + c] = bilinearInterpolate(pixelData: pixelData, width: width, height: height, x: CGFloat(x) / CGFloat(scale), y: CGFloat(y) / CGFloat(scale), c: c)
+                    } else {
+                        resizedPixelData[sourceIndex + c] = trilinearInterpolate(pixelData1: pixelData, pixelData2: pixelData, width: width, height: height, x: CGFloat(x) / CGFloat(scale), y: CGFloat(y) / CGFloat(scale), mip: CGFloat(scale), c: c)
                     }
                 }
             }
         }
-        else{
-            for y in 0..<newHeight {
-                        for x in 0..<newWidth {
-                            let sourceIndex = (x + y * newWidth) * 4
-                            for c in 0..<4 {
-                                resizedPixelData[sourceIndex + c] = trilinearInterpolate(pixelData: pixelData, width: width, height: height, x: CGFloat(x) / CGFloat(scale), y: CGFloat(y) / CGFloat(scale), zScale: zScale, c: c)
-                            }
-                        }
-                    }
-        }
-    
         
-        applyBoxBlur(pixelData: &resizedPixelData, width: newWidth, height: newHeight, radius: 1)
-
+        if scale < 1 {
+            resizedPixelData = gaussianBlur(pixelData: resizedPixelData, width: newWidth, height: newHeight)
+        }
         guard let resizedContext = CGContext(data: &resizedPixelData, width: newWidth, height: newHeight, bitsPerComponent: 8, bytesPerRow: newWidth * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
               let resizedImage = resizedContext.makeImage() else {
             return image
