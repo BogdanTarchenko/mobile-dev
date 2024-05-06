@@ -73,6 +73,7 @@ class EditImageViewModel: ObservableObject {
             let rotatedImage = RotateModel.rotateImage(self.originalImage, byAngle: self.rotateSliderValue)
             
             DispatchQueue.main.async {
+                self.originalImage = rotatedImage
                 self.editedImage = rotatedImage
                 self.isProcessing = false
             }
