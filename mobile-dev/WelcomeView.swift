@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct WelcomeView: View {
     var body: some View {
         NavigationView {
             ZStack(alignment:.leading) {
@@ -28,7 +28,7 @@ struct ContentView: View {
                         .foregroundColor(Color.white)
                         .lineSpacing(5)
                     
-                    NavigationLink(destination: Gallery()) {
+                    NavigationLink(destination: GalleryView(editImageViewModel: EditImageViewModel())) {
                         Text("Continue")
                             .foregroundColor(.white)
                             .font(Font.system(size: 16).weight(.medium))
@@ -46,6 +46,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        WelcomeView()
     }
 }

@@ -1,13 +1,12 @@
 import SwiftUI
 import PhotosUI
 
-struct Gallery: View {
-    
-    @State private var selectedItem: PhotosPickerItem? = nil
+struct GalleryView: View {
+    @ObservedObject var editImageViewModel: EditImageViewModel
     @State private var selectedImageData: Data? = nil
+    @State private var selectedItem: PhotosPickerItem? = nil
     
     var body: some View {
-        
         NavigationView {
             VStack(alignment: .center, spacing: 15) {
                 Rectangle()
@@ -25,19 +24,19 @@ struct Gallery: View {
                         PhotosPicker(
                             selection: $selectedItem,
                             matching: .images,
-                            photoLibrary: .shared()) {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .frame(maxWidth: 110, maxHeight: 110)
-                                    .foregroundColor(Color.gray)
-                                    .opacity(0.25)
-                                    .overlay(
-                                        Image(systemName: "plus")
-                                            .foregroundColor(Color.black)
-                                            .font(Font.system(size: 60))
-                                    )
-                                    .aspectRatio(1/1, contentMode: .fit)
-                            }
-                        
+                            photoLibrary: .shared()
+                        ) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .frame(maxWidth: 110, maxHeight: 110)
+                                .foregroundColor(Color.gray)
+                                .opacity(0.25)
+                                .overlay(
+                                    Image(systemName: "plus")
+                                        .foregroundColor(Color.black)
+                                        .font(Font.system(size: 60))
+                                )
+                                .aspectRatio(1/1, contentMode: .fit)
+                        }
                         .padding(.leading)
                         Spacer()
                     }
@@ -68,39 +67,38 @@ struct Gallery: View {
                                     .font(Font.system(size: 18).weight(.medium))
                             }
                         )
-
                         .padding()
                     Spacer()
                 }
                 
                 if selectedItem != nil {
-                        PhotosPicker(
-                            selection: $selectedItem,
-                            matching: .images,
-                            photoLibrary: .shared()) {
-                                if let selectedImageData,
-                                   let uiImage = UIImage(data: selectedImageData) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(maxHeight: 300)
-                                        .cornerRadius(12)
-                                        .padding()
-                                        .opacity(0.6)
-                                        .overlay(
-                                            HStack {
-                                                Image(systemName: "plus")
-                                                    .foregroundColor(.black)
-                                                    .font(Font.system(size: 60).weight(.medium))
-                                                    .padding(.trailing, 8)
-                                            }
-                                        )
-                                }
-                            }
-                        Spacer()
-                    .padding(.leading)
+                    PhotosPicker(
+                        selection: $selectedItem,
+                        matching: .images,
+                        photoLibrary: .shared()
+                    ) {
+                        if let selectedImageData = selectedImageData,
+                           let uiImage = UIImage(data: selectedImageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(maxHeight: 300)
+                                .cornerRadius(12)
+                                .padding()
+                                .opacity(0.6)
+                                .overlay(
+                                    HStack {
+                                        Image(systemName: "plus")
+                                            .foregroundColor(.black)
+                                            .font(Font.system(size: 60).weight(.medium))
+                                            .padding(.trailing, 8)
+                                    }
+                                )
+                        }
+                    }
+                    Spacer().padding(.leading)
                     Spacer()
-                    NavigationLink(destination: LoadingView(selectedImageData: selectedImageData)) {
+                    NavigationLink(destination: EditingView(editImageViewModel: editImageViewModel)) {
                         RoundedRectangle(cornerRadius: 12)
                             .frame(maxWidth: 350, maxHeight: 60)
                             .foregroundColor(Color.blue)
@@ -121,9 +119,15 @@ struct Gallery: View {
             }
         }
         .onChange(of: selectedItem) { newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                    selectedImageData = data
+            if let newItem = newItem {
+                Task {
+                    if let data = try? await newItem.loadTransferable(type: Data.self) {
+                        selectedImageData = data
+                        if let uiImage = UIImage(data: selectedImageData!) {
+                            editImageViewModel.originalImage = uiImage
+                            editImageViewModel.nonChangedImage = uiImage
+                        }
+                    }
                 }
             }
         }
@@ -135,6 +139,6 @@ struct Gallery: View {
 
 struct Gallery_Previews: PreviewProvider {
     static var previews: some View {
-        Gallery()
+        GalleryView(editImageViewModel: EditImageViewModel())
     }
 }
