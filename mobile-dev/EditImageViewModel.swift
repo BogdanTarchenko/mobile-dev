@@ -139,6 +139,21 @@ class EditImageViewModel: ObservableObject {
         }
     }
     
+    func applyGaussianBlurFilter() {
+        isProcessing = true
+        addCurrentImageToChangeListArray()
+        
+        imageProcessingQueue.async {
+            let filteredImage = FiltersModel.applyGaussianBlurFilter(self.originalImage)
+            
+            DispatchQueue.main.async {
+                self.originalImage = filteredImage
+                self.editedImage = filteredImage
+                self.isProcessing = false
+            }
+        }
+    }
+    
     // Save
     func saveImage() {
         let image = editedImage ?? UIImage()

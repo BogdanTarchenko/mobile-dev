@@ -126,6 +126,7 @@ struct FiltersUI: View {
     var negativeAction: (() -> Void)?
     var mosaicAction: (() -> Void)?
     var medianAction: (() -> Void)?
+    var gaussianBlurAction: (() -> Void)?
     
     var body: some View {
             HStack {
@@ -153,6 +154,15 @@ struct FiltersUI: View {
                 }) {
                     BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
                 }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Gaussian Blur
+                    gaussianBlurAction?()
+                }) {
+                    BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
+                }
             }
             .padding(.horizontal, 30)
         
@@ -175,6 +185,8 @@ struct FiltersUI: View {
             .foregroundColor(.gray)
             .font(Font.system(size: 18).weight(.light))
             .padding()
+        
+        
     }
 }
 
@@ -291,6 +303,8 @@ struct EditingView: View {
                         editImageViewModel.applyMosaicFilter()
                     }, medianAction: {
                         editImageViewModel.applyMedianFilter()
+                    }, gaussianBlurAction: {
+                        editImageViewModel.applyGaussianBlurFilter()
                     })
                 }
                 
