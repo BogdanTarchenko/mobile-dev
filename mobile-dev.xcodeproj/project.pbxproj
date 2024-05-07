@@ -17,6 +17,7 @@
 		43BE19B22BDBE18000292729 /* RotateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BE19B12BDBE18000292729 /* RotateModel.swift */; };
 		43E35C412BE1351300D74B1D /* EditImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E35C402BE1351300D74B1D /* EditImageViewModel.swift */; };
 		E667C3852BE16116004AF7F2 /* ResizeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E667C3842BE16116004AF7F2 /* ResizeModel.swift */; };
+		E6973A5F2BE9392B00499AE4 /* RetouchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6973A5E2BE9392B00499AE4 /* RetouchModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		43BE19B12BDBE18000292729 /* RotateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotateModel.swift; sourceTree = "<group>"; };
 		43E35C402BE1351300D74B1D /* EditImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditImageViewModel.swift; sourceTree = "<group>"; };
 		E667C3842BE16116004AF7F2 /* ResizeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizeModel.swift; sourceTree = "<group>"; };
+		E6973A5E2BE9392B00499AE4 /* RetouchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetouchModel.swift; sourceTree = "<group>"; };
 		E6B087CC2BE20BB1004B4804 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +75,7 @@
 				43BE19B12BDBE18000292729 /* RotateModel.swift */,
 				E667C3842BE16116004AF7F2 /* ResizeModel.swift */,
 				43076F162BE5032C00CAD0C6 /* FiltersModel.swift */,
+				E6973A5E2BE9392B00499AE4 /* RetouchModel.swift */,
 				431D5C192BD7CF2500F66630 /* Assets.xcassets */,
 				431D5C1B2BD7CF2500F66630 /* Preview Content */,
 			);
@@ -162,6 +165,7 @@
 				43BE19B22BDBE18000292729 /* RotateModel.swift in Sources */,
 				439135762BD9509C00D5FDEC /* GalleryView.swift in Sources */,
 				43E35C412BE1351300D74B1D /* EditImageViewModel.swift in Sources */,
+				E6973A5F2BE9392B00499AE4 /* RetouchModel.swift in Sources */,
 				431D5C162BD7CF2300F66630 /* mobile_devApp.swift in Sources */,
 				E667C3852BE16116004AF7F2 /* ResizeModel.swift in Sources */,
 				43076F172BE5032C00CAD0C6 /* FiltersModel.swift in Sources */,
@@ -293,7 +297,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"mobile-dev/Preview Content\"";
-				DEVELOPMENT_TEAM = BUF892U9LY;
+				DEVELOPMENT_TEAM = T77L9FD3JY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "mobile-dev/Info.plist";
@@ -308,7 +312,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = HITS.mobile;
+				PRODUCT_BUNDLE_IDENTIFIER = "mobile-dev";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -324,7 +328,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"mobile-dev/Preview Content\"";
-				DEVELOPMENT_TEAM = BUF892U9LY;
+				DEVELOPMENT_TEAM = T77L9FD3JY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "mobile-dev/Info.plist";
@@ -339,7 +343,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = HITS.mobile;
+				PRODUCT_BUNDLE_IDENTIFIER = "mobile-dev";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
