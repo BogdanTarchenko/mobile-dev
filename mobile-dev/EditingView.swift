@@ -181,7 +181,7 @@ struct FiltersUI: View {
             editImageViewModel.mosaicSliderValue = mosaicSliderValue
         }
             
-        Text("Mosaic block size: \(mosaicSliderValue)px")
+        Text("Mosaic block size: \(mosaicSliderValue) px")
             .foregroundColor(.gray)
             .font(Font.system(size: 18).weight(.light))
             .padding()
@@ -224,16 +224,137 @@ struct RetouchUI: View {
     }
 }
 
+struct MaskingUI: View {
+    @ObservedObject var editImageViewModel: EditImageViewModel
+    @State private var thresholdSliderValue: Int = 20
+    @State private var amountSliderValue: Int = 50
+    @State private var radiusSliderValue: Int = 1
+    
+    @State private var isThresholdActive = false
+    @State private var isAmountActive = false
+    @State private var isRadiusActive = false
+    
+    var maskingAction: (() -> Void)?
+    
+    var body: some View {
+            HStack {
+                Button(action:{
+                    // Threshold
+                    isThresholdActive = true
+                    isRadiusActive = false
+                    isAmountActive = false
+                }) {
+                    BottomPanelButton(iconName: "exclamationmark.triangle", text: "Threshold", isActive: isThresholdActive)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Amount
+                    isAmountActive = true
+                    isThresholdActive = false
+                    isRadiusActive = false
+                }) {
+                    BottomPanelButton(iconName: "xmark.circle", text: "Amount", isActive: isAmountActive)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Radius
+                    isRadiusActive = true
+                    isThresholdActive = false
+                    isAmountActive = false
+                }) {
+                    BottomPanelButton(iconName: "smallcircle.fill.circle", text: "Radius", isActive: isRadiusActive)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Apply masking
+                    maskingAction?()
+                }) {
+                    BottomPanelButton(iconName: "arrowtriangle.right.circle", text: "Start", isActive: false)
+                }
+            }
+            .padding(.horizontal, 30)
+        
+        Spacer()
+        
+        if isThresholdActive {
+            Slider(value: Binding<Double>(
+                get: { Double(thresholdSliderValue) },
+                set: { newValue in thresholdSliderValue = Int(newValue) }
+            ), in: 5...100, step: 1)
+            .accentColor(.gray)
+            .padding(.horizontal)
+            .onChange(of: thresholdSliderValue) { newValue in
+                editImageViewModel.thresholdSliderValue = newValue
+            }
+            .onAppear {
+                editImageViewModel.thresholdSliderValue = thresholdSliderValue
+            }
+            
+            Text("Threshold value: \(thresholdSliderValue)")
+                .foregroundColor(.gray)
+                .font(Font.system(size: 18).weight(.light))
+                .padding()
+        }
+        
+        if isRadiusActive {
+            Slider(value: Binding<Double>(
+                get: { Double(radiusSliderValue) },
+                set: { newValue in radiusSliderValue = Int(newValue) }
+            ), in: 1...5, step: 1)
+            .accentColor(.gray)
+            .padding(.horizontal)
+            .onChange(of: radiusSliderValue) { newValue in
+                editImageViewModel.radiusSliderValue = newValue
+            }
+            .onAppear {
+                editImageViewModel.radiusSliderValue = radiusSliderValue
+            }
+            
+            Text("Radius: \(radiusSliderValue) px")
+                .foregroundColor(.gray)
+                .font(Font.system(size: 18).weight(.light))
+                .padding()
+        }
+        
+        if isAmountActive {
+            Slider(value: Binding<Double>(
+                get: { Double(amountSliderValue) },
+                set: { newValue in amountSliderValue = Int(newValue) }
+            ), in: 1...100, step: 1)
+            .accentColor(.gray)
+            .padding(.horizontal)
+            .onChange(of: amountSliderValue) { newValue in
+                editImageViewModel.amountSliderValue = newValue
+            }
+            .onAppear {
+                editImageViewModel.amountSliderValue = amountSliderValue
+            }
+            
+            Text("Amount: \(amountSliderValue)%")
+                .foregroundColor(.gray)
+                .font(Font.system(size: 18).weight(.light))
+                .padding()
+        }
+    }
+}
+
 
 
 struct EditingView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     
-    
     @State private var isRotateActive = false
     @State private var isResizeActive = false
     @State private var isFiltersActive = false
     @State private var isRetouchActive = false
+    @State private var isMaskingActive = false
+    
     @State var touchLocation: CGPoint?
     
 
@@ -377,7 +498,13 @@ struct EditingView: View {
                 // Retouch UI
                 if isRetouchActive {
                     RetouchUI(editImageViewModel: editImageViewModel, retouchAction: {
-                        
+                    })
+                }
+                
+                // Masking UI
+                if isMaskingActive {
+                    MaskingUI(editImageViewModel: editImageViewModel, maskingAction: {
+                        editImageViewModel.applyUnsharpMask()
                     })
                 }
                 
@@ -393,7 +520,7 @@ struct EditingView: View {
                             isFiltersActive = false
                             isResizeActive = false
                             isRetouchActive = false
-                            editImageViewModel.rotateImage()
+                            isMaskingActive = false
                         }) {
                             BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: isRotateActive)
                         }
@@ -404,6 +531,7 @@ struct EditingView: View {
                             isResizeActive = false
                             isRotateActive = false
                             isRetouchActive = false
+                            isMaskingActive = false
                         }) {
                             BottomPanelButton(iconName: "camera.filters", text: "Filter", isActive: isFiltersActive)
                         }
@@ -414,6 +542,7 @@ struct EditingView: View {
                             isFiltersActive = false
                             isRotateActive = false
                             isRetouchActive = false
+                            isMaskingActive = false
                         }) {
                             BottomPanelButton(iconName: "square.resize.up", text: "Resize", isActive: isResizeActive)
                         }
@@ -432,18 +561,24 @@ struct EditingView: View {
                         
                         Button(action:{
                             // Retouch
+                            isRetouchActive = true
                             isResizeActive = false
                             isFiltersActive = false
                             isRotateActive = false
-                            isRetouchActive = true
+                            isMaskingActive = false
                         }) {
-                            BottomPanelButton(iconName: "wand.and.stars.inverse", text: "Retouch", isActive: false)
+                            BottomPanelButton(iconName: "wand.and.stars.inverse", text: "Retouch", isActive: isRetouchActive)
                         }
                         
                         Button(action:{
                             // Masking
+                            isMaskingActive = true
+                            isRetouchActive = false
+                            isResizeActive = false
+                            isFiltersActive = false
+                            isRotateActive = false
                         }) {
-                            BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: false)
+                            BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: isMaskingActive)
                         }
                         
                         Button(action:{

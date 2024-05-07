@@ -23,6 +23,10 @@ class EditImageViewModel: ObservableObject {
     @Published var resizeSliderValue: Double?
     @Published var mosaicSliderValue: Int?
     @Published var rotateSliderValue: Int?
+    @Published var thresholdSliderValue: Int?
+    @Published var amountSliderValue: Int?
+    @Published var radiusSliderValue: Int?
+    
     @Published var brushSize: Double = 30
     @Published var retouchStrength: Double = 0.5
     
@@ -177,9 +181,7 @@ class EditImageViewModel: ObservableObject {
         }
     }
 
-
-        
-    private func convertPoint(_ point: CGPoint, fromViewSize viewSize: CGSize, toImageSize imageSize: CGSize) -> CGPoint {
+    func convertPoint(_ point: CGPoint, fromViewSize viewSize: CGSize, toImageSize imageSize: CGSize) -> CGPoint {
         let scaleX = viewSize.width / imageSize.width
         let scaleY = viewSize.height / imageSize.height
 
@@ -192,6 +194,21 @@ class EditImageViewModel: ObservableObject {
         let correctedY = (point.y - offsetY) / scale
 
         return CGPoint(x: correctedX, y: correctedY)
+    }
+    
+    func applyUnsharpMask() {
+        isProcessing = true
+        addCurrentImageToChangeListArray()
+        
+        imageProcessingQueue.async {
+            let maskedImage = UnsharpMaskModel.applyUnsharpMask(self.originalImage, threshold: self.thresholdSliderValue, amount: self.amountSliderValue, radius: self.radiusSliderValue)
+            
+            DispatchQueue.main.async {
+                self.originalImage = maskedImage
+                self.editedImage = maskedImage
+                self.isProcessing = false
+            }
+        }
     }
 
 
