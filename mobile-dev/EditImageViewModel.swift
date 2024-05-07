@@ -155,6 +155,21 @@ class EditImageViewModel: ObservableObject {
         }
     }
     
+    func applyUnsharpMask() {
+        isProcessing = true
+        addCurrentImageToChangeListArray()
+        
+        imageProcessingQueue.async {
+            let maskedImage = UnsharpMaskModel.applyUnsharpMask(self.originalImage)
+            
+            DispatchQueue.main.async {
+                self.originalImage = maskedImage
+                self.editedImage = maskedImage
+                self.isProcessing = false
+            }
+        }
+    }
+    
     // Save
     func saveImage() {
         let image = editedImage ?? UIImage()

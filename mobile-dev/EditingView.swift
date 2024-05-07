@@ -196,6 +196,7 @@ struct EditingView: View {
     @State private var isRotateActive = false
     @State private var isResizeActive = false
     @State private var isFiltersActive = false
+    @State private var isMaskingActive = false
     
     var body: some View {
         NavigationView {
@@ -319,6 +320,7 @@ struct EditingView: View {
                             isRotateActive = true
                             isFiltersActive = false
                             isResizeActive = false
+                            isMaskingActive = false
                             editImageViewModel.rotateImage()
                         }) {
                             BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: isRotateActive)
@@ -329,6 +331,7 @@ struct EditingView: View {
                             isFiltersActive = true
                             isResizeActive = false
                             isRotateActive = false
+                            isMaskingActive = false
                         }) {
                             BottomPanelButton(iconName: "camera.filters", text: "Filter", isActive: isFiltersActive)
                         }
@@ -338,6 +341,7 @@ struct EditingView: View {
                             isResizeActive = true
                             isFiltersActive = false
                             isRotateActive = false
+                            isMaskingActive = false
                         }) {
                             BottomPanelButton(iconName: "square.resize.up", text: "Resize", isActive: isResizeActive)
                         }
@@ -362,8 +366,14 @@ struct EditingView: View {
                         
                         Button(action:{
                             // Masking
+                            isMaskingActive = true
+                            isResizeActive = false
+                            isFiltersActive = false
+                            isRotateActive = false
+                            editImageViewModel.applyUnsharpMask()
+                            
                         }) {
-                            BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: false)
+                            BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: isMaskingActive)
                         }
                         
                         Button(action:{
