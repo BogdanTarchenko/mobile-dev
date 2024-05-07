@@ -1,5 +1,4 @@
 import SwiftUI
-import Combine
 
 class EditImageViewModel: ObservableObject {
     
@@ -23,8 +22,10 @@ class EditImageViewModel: ObservableObject {
     @Published var resizeSliderValue: Double?
     @Published var mosaicSliderValue: Int?
     @Published var rotateSliderValue: Int?
-    @Published var brushSize: Double = 30
-    @Published var retouchStrength: Double = 0.5
+    @Published var thresholdSliderValue: Int?
+    @Published var amountSliderValue: Int?
+    @Published var radiusSliderValue: Int?
+    
     
     private var undoStack: [UIImage] = []
     private var redoStack: [UIImage] = []
@@ -158,48 +159,20 @@ class EditImageViewModel: ObservableObject {
         }
     }
     
-    func retouchImage(at point: CGPoint, in viewSize: CGSize) {
-        guard let image = editedImage else { return }
-        let imageSize = image.size
-        let convertedPoint = convertPoint(point, fromViewSize: viewSize, toImageSize: imageSize)
-
-        guard (0..<imageSize.width).contains(convertedPoint.x),
-              (0..<imageSize.height).contains(convertedPoint.y) else {
-            return
-        }
-
+    func applyUnsharpMask() {
+        isProcessing = true
+        addCurrentImageToChangeListArray()
+        
         imageProcessingQueue.async {
-            let filteredImage = RetouchModel.applyRetouchFilter(image, centerX: Int(convertedPoint.x), centerY: Int(convertedPoint.y), radius: Int(self.brushSize), retouchStrength: self.retouchStrength)
+            let maskedImage = UnsharpMaskModel.applyUnsharpMask(self.originalImage, threshold: self.thresholdSliderValue, amount: self.amountSliderValue, radius: self.radiusSliderValue)
             
             DispatchQueue.main.async {
-                self.editedImage = filteredImage
+                self.originalImage = maskedImage
+                self.editedImage = maskedImage
+                self.isProcessing = false
             }
         }
     }
-
-
-        
-    private func convertPoint(_ point: CGPoint, fromViewSize viewSize: CGSize, toImageSize imageSize: CGSize) -> CGPoint {
-        let scaleX = viewSize.width / imageSize.width
-        let scaleY = viewSize.height / imageSize.height
-
-        let scale = min(scaleX, scaleY)
-
-        let offsetX = (viewSize.width - imageSize.width * scale) / 2
-        let offsetY = (viewSize.height - imageSize.height * scale) / 2
-
-        let correctedX = (point.x - offsetX) / scale
-        let correctedY = (point.y - offsetY) / scale
-
-        return CGPoint(x: correctedX, y: correctedY)
-    }
-
-
-
-    
-    
-
-
     
     // Save
     func saveImage() {

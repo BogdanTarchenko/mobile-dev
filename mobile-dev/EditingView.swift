@@ -190,57 +190,88 @@ struct FiltersUI: View {
     }
 }
 
-struct RetouchUI: View {
+struct UnsharpMaskUI: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
-    var retouchAction: (() -> Void)?
+    @State private var thresholdSliderValue: Int = 20
+    @State private var amountSliderValue: Int = 50
+    @State private var radiusSliderValue: Int = 1
+    var thresholdAction: (() -> Void)?
+    var amountAction: (() -> Void)?
+    var radiusAction: (() -> Void)?
+    var startAction: (() -> Void)?
     
     var body: some View {
-        VStack {
-            VStack {
-                Text("Brush Size: \(Int(editImageViewModel.brushSize))")
-                    .foregroundColor(.white)
-                    .font(Font.system(size: 16).weight(.light))
-                    .padding(.vertical, 5)
-
-                Slider(value: $editImageViewModel.brushSize, in: 5...100, step: 1)
-                    .accentColor(.blue)
-                    .padding(.horizontal, 20)
+            HStack {
+                Button(action:{
+                    // Threshold select
+                    thresholdAction?()
+                }) {
+                    BottomPanelButton(iconName: "minus.diamond", text: "Threshold", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Amount select
+                    amountAction?()
+                }) {
+                    BottomPanelButton(iconName: "mosaic", text: "Amount", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Radius select
+                    radiusAction?()
+                }) {
+                    BottomPanelButton(iconName: "divide.square", text: "Radius", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Start button
+                    startAction?()
+                }) {
+                    BottomPanelButton(iconName: "laser.burst", text: "Edit", isActive: false)
+                }
             }
-            .padding(.vertical, 10)
-
-            VStack {
-                Text("Retouch Strength: \(String(format: "%.2f", editImageViewModel.retouchStrength))")
-                    .foregroundColor(.white)
-                    .font(Font.system(size: 16).weight(.light))
-                    .padding(.vertical, 5)
-
-                Slider(value: $editImageViewModel.retouchStrength, in: 0...1)
-                    .accentColor(.blue)
-                    .padding(.horizontal, 20)
-            }
-            .padding(.vertical, 10)
+            .padding(.horizontal, 30)
+        
+        Spacer()
+        
+        Slider(value: Binding<Double>(
+            get: { Double(thresholdSliderValue) },
+            set: { newValue in thresholdSliderValue = Int(newValue) }
+        ), in: 10...250, step: 10)
+        .accentColor(.gray)
+        .padding(.horizontal)
+        .onChange(of: thresholdSliderValue) { newValue in
+            editImageViewModel.thresholdSliderValue = newValue
         }
-
+        .onAppear {
+            editImageViewModel.thresholdSliderValue = thresholdSliderValue
+        }
+            
+        Text("Threshold value: \(thresholdSliderValue)")
+            .foregroundColor(.gray)
+            .font(Font.system(size: 18).weight(.light))
+            .padding()
+        
+        
     }
 }
-
-
 
 struct EditingView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     
-    
     @State private var isRotateActive = false
     @State private var isResizeActive = false
     @State private var isFiltersActive = false
-    @State private var isRetouchActive = false
-    @State var touchLocation: CGPoint?
-    
-
+    @State private var isMaskingActive = false
     
     var body: some View {
         NavigationView {
-            
             VStack(alignment: .center) {
                 
                 // Top button bar
@@ -309,29 +340,6 @@ struct EditingView: View {
                                 .padding(.top, 150)
                         }
                     }
-                } else if isRetouchActive {
-                    GeometryReader { geometry in
-                                VStack {
-                                    if let editedImage = editImageViewModel.editedImage {
-                                        Image(uiImage: editedImage)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(maxWidth: .infinity, maxHeight: 400)
-                                            .gesture(
-                                                DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                                                    .onChanged { value in
-                                                        touchLocation = value.location
-                                                        if isRetouchActive {
-                                                            editImageViewModel.retouchImage(at: value.location, in: geometry.size)
-                                                        }
-                                                    }
-                                                    .onEnded { _ in
-                                                        touchLocation = nil
-                                                    }
-                                            )
-                                    }
-                                }
-                            }
                 } else {
                     if let editedImage = editImageViewModel.editedImage {
                         Image(uiImage: editedImage)
@@ -339,7 +347,6 @@ struct EditingView: View {
                             .aspectRatio(contentMode: .fit)
                             .padding()
                             .frame(maxHeight: 400)
-                        
                     } else {
                         Text("No image selected")
                             .foregroundColor(.gray)
@@ -374,11 +381,8 @@ struct EditingView: View {
                     })
                 }
                 
-                // Retouch UI
-                if isRetouchActive {
-                    RetouchUI(editImageViewModel: editImageViewModel, retouchAction: {
-                        
-                    })
+                if isMaskingActive {
+                    
                 }
                 
                 Spacer()
@@ -392,7 +396,7 @@ struct EditingView: View {
                             isRotateActive = true
                             isFiltersActive = false
                             isResizeActive = false
-                            isRetouchActive = false
+                            isMaskingActive = false
                             editImageViewModel.rotateImage()
                         }) {
                             BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: isRotateActive)
@@ -403,7 +407,7 @@ struct EditingView: View {
                             isFiltersActive = true
                             isResizeActive = false
                             isRotateActive = false
-                            isRetouchActive = false
+                            isMaskingActive = false
                         }) {
                             BottomPanelButton(iconName: "camera.filters", text: "Filter", isActive: isFiltersActive)
                         }
@@ -413,7 +417,7 @@ struct EditingView: View {
                             isResizeActive = true
                             isFiltersActive = false
                             isRotateActive = false
-                            isRetouchActive = false
+                            isMaskingActive = false
                         }) {
                             BottomPanelButton(iconName: "square.resize.up", text: "Resize", isActive: isResizeActive)
                         }
@@ -432,18 +436,20 @@ struct EditingView: View {
                         
                         Button(action:{
                             // Retouch
-                            isResizeActive = false
-                            isFiltersActive = false
-                            isRotateActive = false
-                            isRetouchActive = true
                         }) {
                             BottomPanelButton(iconName: "wand.and.stars.inverse", text: "Retouch", isActive: false)
                         }
                         
                         Button(action:{
                             // Masking
+                            isMaskingActive = true
+                            isResizeActive = false
+                            isFiltersActive = false
+                            isRotateActive = false
+                            editImageViewModel.applyUnsharpMask()
+                            
                         }) {
-                            BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: false)
+                            BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: isMaskingActive)
                         }
                         
                         Button(action:{
@@ -475,4 +481,3 @@ struct LoadingView_Previews: PreviewProvider {
         EditingView(editImageViewModel: EditImageViewModel())
     }
 }
-
