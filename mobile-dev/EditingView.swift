@@ -190,6 +190,78 @@ struct FiltersUI: View {
     }
 }
 
+struct UnsharpMaskUI: View {
+    @ObservedObject var editImageViewModel: EditImageViewModel
+    @State private var thresholdSliderValue: Int = 20
+    @State private var amountSliderValue: Int = 50
+    @State private var radiusSliderValue: Int = 1
+    var thresholdAction: (() -> Void)?
+    var amountAction: (() -> Void)?
+    var radiusAction: (() -> Void)?
+    var startAction: (() -> Void)?
+    
+    var body: some View {
+            HStack {
+                Button(action:{
+                    // Threshold select
+                    thresholdAction?()
+                }) {
+                    BottomPanelButton(iconName: "minus.diamond", text: "Threshold", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Amount select
+                    amountAction?()
+                }) {
+                    BottomPanelButton(iconName: "mosaic", text: "Amount", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Radius select
+                    radiusAction?()
+                }) {
+                    BottomPanelButton(iconName: "divide.square", text: "Radius", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Start button
+                    startAction?()
+                }) {
+                    BottomPanelButton(iconName: "laser.burst", text: "Edit", isActive: false)
+                }
+            }
+            .padding(.horizontal, 30)
+        
+        Spacer()
+        
+        Slider(value: Binding<Double>(
+            get: { Double(thresholdSliderValue) },
+            set: { newValue in thresholdSliderValue = Int(newValue) }
+        ), in: 10...250, step: 10)
+        .accentColor(.gray)
+        .padding(.horizontal)
+        .onChange(of: thresholdSliderValue) { newValue in
+            editImageViewModel.thresholdSliderValue = newValue
+        }
+        .onAppear {
+            editImageViewModel.thresholdSliderValue = thresholdSliderValue
+        }
+            
+        Text("Threshold value: \(thresholdSliderValue)")
+            .foregroundColor(.gray)
+            .font(Font.system(size: 18).weight(.light))
+            .padding()
+        
+        
+    }
+}
+
 struct EditingView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     
@@ -307,6 +379,10 @@ struct EditingView: View {
                     }, gaussianBlurAction: {
                         editImageViewModel.applyGaussianBlurFilter()
                     })
+                }
+                
+                if isMaskingActive {
+                    
                 }
                 
                 Spacer()

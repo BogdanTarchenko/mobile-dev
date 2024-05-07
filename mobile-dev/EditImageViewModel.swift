@@ -22,6 +22,10 @@ class EditImageViewModel: ObservableObject {
     @Published var resizeSliderValue: Double?
     @Published var mosaicSliderValue: Int?
     @Published var rotateSliderValue: Int?
+    @Published var thresholdSliderValue: Int?
+    @Published var amountSliderValue: Int?
+    @Published var radiusSliderValue: Int?
+    
     
     private var undoStack: [UIImage] = []
     private var redoStack: [UIImage] = []
@@ -160,7 +164,7 @@ class EditImageViewModel: ObservableObject {
         addCurrentImageToChangeListArray()
         
         imageProcessingQueue.async {
-            let maskedImage = UnsharpMaskModel.applyUnsharpMask(self.originalImage)
+            let maskedImage = UnsharpMaskModel.applyUnsharpMask(self.originalImage, threshold: self.thresholdSliderValue, amount: self.amountSliderValue, radius: self.radiusSliderValue)
             
             DispatchQueue.main.async {
                 self.originalImage = maskedImage

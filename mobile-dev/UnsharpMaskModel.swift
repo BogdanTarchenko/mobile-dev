@@ -2,7 +2,7 @@ import SwiftUI
 import CoreGraphics
 
 enum UnsharpMaskModel {
-    static func gaussianBlur(pixelData: [UInt8], width: Int, height: Int, radius: Int = 1) -> [UInt8] {
+    static func gaussianBlur(pixelData: [UInt8], width: Int, height: Int, radius: Int) -> [UInt8] {
         let kernelSize = 2 * radius + 1
         let kernel = createGaussianKernel(size: kernelSize, sigma: 1.5)
         var extendedData = Array(repeating: UInt8(0), count: (width + 2 * radius) * (height + 2 * radius) * 4)
@@ -80,8 +80,8 @@ enum UnsharpMaskModel {
         return kernel
     }
     
-    static func applyUnsharpMask(_ image: UIImage?) -> UIImage? {
-        guard let cgImage = image?.cgImage else {
+    static func applyUnsharpMask(_ image: UIImage?, threshold: Int?, amount: Int?, radius: Int?) -> UIImage? {
+        guard let cgImage = image?.cgImage, let threshold = threshold, let amount = amount, let radius = radius else {
             return image
         }
         
@@ -96,25 +96,22 @@ enum UnsharpMaskModel {
         
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
-        var maskedPixelData = [UInt8](repeating: 0, count: width * height * 4)
-        var bluredPixelData = gaussianBlur(pixelData: pixelData, width: width, height: height)
-        let threshold = 50
-        let k = 1
-        // Не забыть добавить радиус
+        var maskedPixelData = pixelData
+        var bluredPixelData = gaussianBlur(pixelData: pixelData, width: width, height: height, radius: radius)
+        let k: Double = Double(2 * amount / 100)
         
         DispatchQueue.concurrentPerform(iterations: height) { y in
             for x in 0..<width {
                 let index = (x + y * width) * 4
-                let difference = UInt8(abs(Int32(pixelData[index] - bluredPixelData[index])))
-                
+                let value1 = Int32(pixelData[index])
+                let value2 = Int32(bluredPixelData[index])
+                let difference = UInt8(abs(value1 - value2))
+                        
                 if (difference > threshold) {
-                    maskedPixelData[index] = 0
+                    let dk = Int32(Double(difference) * k)
+                    let val = UInt8(max(min(value1 + dk, 255), 0))
+                    maskedPixelData[index] = val
                 }
-                else {
-                    maskedPixelData[index] = difference
-                }
-                
-                maskedPixelData[index] *= UInt8(k)
             }
         }
         
