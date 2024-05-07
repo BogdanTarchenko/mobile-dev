@@ -28,19 +28,32 @@ struct WelcomeView: View {
                         .foregroundColor(Color.white)
                         .lineSpacing(5)
                     
-                    NavigationLink(destination: GalleryView(editImageViewModel: EditImageViewModel())) {
-                        Text("Continue")
-                            .foregroundColor(.white)
-                            .font(Font.system(size: 16).weight(.medium))
-                            .frame(maxWidth: 500, maxHeight: 60)
-                            .background(Color.blue)
-                            .cornerRadius(12)
+                    HStack {
+                        NavigationLink(destination: GalleryView(editImageViewModel: EditImageViewModel())) {
+                            Text("Photo Editor")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 16).weight(.medium))
+                                .frame(maxWidth: 500, maxHeight: 60)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
+                        NavigationLink(destination: VectorView()) {
+                            Text("Vector Editor")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 16).weight(.medium))
+                                .frame(maxWidth: 500, maxHeight: 60)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
                     }
                     .padding(.bottom, 70)
                 }
                 .padding()
             }
         }
+        .navigationBarHidden(true)
+        .navigationBarTitle("")
+        .navigationBarBackButtonHidden(true)
     }
 }
 

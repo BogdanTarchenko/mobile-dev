@@ -9,15 +9,22 @@ struct GalleryView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .center, spacing: 15) {
-                Rectangle()
-                    .frame(maxWidth: .infinity, maxHeight: 250)
-                    .foregroundColor(Color.gray)
-                    .opacity(0.07)
-                    .overlay(
-                        Text("Photos")
-                            .font(Font.system(size: 24).weight(.bold))
-                    )
-                    .edgesIgnoringSafeArea(.top)
+                ZStack {
+                    NavigationLink(destination: WelcomeView()){
+                        BottomPanelButton(iconName: "chevron.backward", text: "Back", isActive: false)
+                        Spacer()
+                    }
+                    .padding()
+                    Rectangle()
+                        .frame(maxWidth: .infinity, maxHeight: 250)
+                        .foregroundColor(Color.gray)
+                        .opacity(0.07)
+                        .overlay(
+                            Text("Photos")
+                                .font(Font.system(size: 24).weight(.bold))
+                        )
+                        .edgesIgnoringSafeArea(.top)
+                }
                 
                 if selectedItem == nil {
                     HStack() {
