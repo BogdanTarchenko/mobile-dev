@@ -97,19 +97,19 @@ enum UnsharpMaskModel {
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         var maskedPixelData = pixelData
-        var bluredPixelData = gaussianBlur(pixelData: pixelData, width: width, height: height, radius: radius)
-        var k: Double = Double(2 * amount / 100)
+        let bluredPixelData = gaussianBlur(pixelData: pixelData, width: width, height: height, radius: radius)
+        let k: Double = Double(2 * amount / 100)
         
-        DispatchQueue.concurrentPerform(iterations: height) { y in
+        for y in 0..<height {
             for x in 0..<width {
-                var index = (x + y * width) * 4
-                var value1: Int32 = Int32(pixelData[index])
-                var value2: Int32 = Int32(bluredPixelData[index])
-                var difference: UInt8 = UInt8(abs(value1 - value2))
+                let index = (x + y * width) * 4
+                let value1: Int32 = Int32(pixelData[index])
+                let value2: Int32 = Int32(bluredPixelData[index])
+                let difference: UInt8 = UInt8(abs(value1 - value2))
                         
                 if (difference > threshold) {
-                    var dk = Int32(Double(difference) * k)
-                    var val = UInt8(max(min(value1 + dk, 255), 0))
+                    let dk = Int32(Double(difference) * k)
+                    let val = UInt8(max(min(value1 + dk, 255), 0))
                     maskedPixelData[index] = val
                 }
             }
