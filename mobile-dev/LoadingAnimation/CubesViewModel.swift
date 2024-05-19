@@ -1,6 +1,6 @@
 import SwiftUI
 
-class WelcomeViewModel: ObservableObject{
+class CubesViewModel: ObservableObject{
     @Published var allCubes = AllCubes.allCases
     @Published var allIndicies: [(CGFloat,CGFloat,Double,Bool)] = [
         (-80, 40, 5, true),

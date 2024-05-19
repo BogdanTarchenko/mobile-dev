@@ -45,7 +45,6 @@ struct SceneKitView: UIViewRepresentable {
     func makeUIView(context: Context) -> SCNView {
         let view = SCNView(frame: CGRect(origin: .zero, size: size), options: nil)
         view.scene = scene
-        view.autoenablesDefaultLighting = true
         view.allowsCameraControl = true
         view.backgroundColor = UIColor.black
         return view

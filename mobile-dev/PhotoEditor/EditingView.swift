@@ -65,10 +65,8 @@ struct EditingView: View {
                 if editImageViewModel.isProcessing {
                     ZStack {
                         if let editedImage = editImageViewModel.editedImage {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                                .scaleEffect(2)
-                                .foregroundColor(.white)
+                            CubesView()
+                                .scaleEffect(0.1)
                             Image(uiImage: editedImage)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -203,6 +201,7 @@ struct EditingView: View {
                         
                         Button(action:{
                             // Face recognize
+                            editImageViewModel.detectFacesInImage()
                         }) {
                             BottomPanelButton(iconName: "faceid", text: "Face AI", isActive: false)
                         }

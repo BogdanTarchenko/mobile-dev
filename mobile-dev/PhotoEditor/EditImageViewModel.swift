@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 class EditImageViewModel: ObservableObject {
     
@@ -15,6 +16,7 @@ class EditImageViewModel: ObservableObject {
             }
         }
     }
+    private var cancellables = Set<AnyCancellable>()
     
     @Published var editedImage: UIImage?
     @Published var nonChangedImage: UIImage?
@@ -209,11 +211,29 @@ class EditImageViewModel: ObservableObject {
             }
         }
     }
-
-
-
     
-    
+    func detectFacesInImage() {
+        isProcessing = true
+        addCurrentImageToChangeListArray()
+        
+        imageProcessingQueue.async {
+            FaceModel.detectFaces(in: self.originalImage!) { result in
+                switch result {
+                case .success(let facedImage):
+                    DispatchQueue.main.async {
+                        self.originalImage = facedImage
+                        self.editedImage = facedImage
+                        self.isProcessing = false
+                    }
+                case .failure(let error):
+                    print("Face detection error: \(error)")
+                    DispatchQueue.main.async {
+                        self.isProcessing = false
+                    }
+                }
+            }
+        }
+    }
 
 
     

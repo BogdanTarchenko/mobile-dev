@@ -2,93 +2,71 @@ import SwiftUI
 
 struct WelcomeView: View {
     var body: some View {
-        FinalView()
-    }
-}
-
-#Preview {
-    WelcomeView()
-}
-
-struct FinalView: View {
-    var body: some View {
-        ZStack{
-            Color.black
-                .ignoresSafeArea()
-            CubesView()
-                .offset(x:0, y: -95)
-            bottomPanel()
-        }
-    }
-    
-    @ViewBuilder
-    private func bottomPanel() -> some View{
-        ZStack{
-            VStack{
-                Spacer()
-                Text("Powered by HITs.")
-                    .foregroundColor(.white)
-                    .font(Font.system(size: 18).weight(.medium))
-                NavigationLink(destination: EditingView(editImageViewModel: EditImageViewModel())) {
+        NavigationView {
+            ZStack(alignment:.leading) {
+                Image("starting-screen-background")
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
+                    .scaledToFill()
+                VStack(alignment: .leading, spacing: 20) {
+                    Spacer()
+                    RoundedRectangle(cornerRadius: 6)
+                        .frame(maxWidth: 150, maxHeight: 40)
+                        .foregroundColor(Color.blue)
+                        .overlay(
+                            Text("Powered by HITs")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 18).weight(.medium))
+                            )
+                    
                     Text("Photo Editor")
-                        .foregroundColor(.white)
-                        .font(Font.system(size: 16).weight(.medium))
-                        .frame(maxWidth: 500, maxHeight: 60)
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                        .font(Font.system(size: 36).weight(.bold))
+                        .foregroundColor(Color.white)
+                    
+                    Text("Edit photos using built-in image\nprocessing filters, try out an AI technology")
+                        .font(Font.system(size: 18).weight(.medium))
+                        .foregroundColor(Color.white)
+                        .lineSpacing(5)
+                    
+                    HStack {
+                        NavigationLink(destination: GalleryView(editImageViewModel: EditImageViewModel())) {
+                            Text("Photo Editor")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 16).weight(.medium))
+                                .frame(maxWidth: 500, maxHeight: 60)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
+                        NavigationLink(destination: VectorView()) {
+                            Text("Vector Editor")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 16).weight(.medium))
+                                .frame(maxWidth: 500, maxHeight: 60)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
+                        NavigationLink(destination: CubeView()) {
+                            Text("3D Cube")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 16).weight(.medium))
+                                .frame(maxWidth: 500, maxHeight: 60)
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
+                    }
+                    .padding(.bottom, 70)
                 }
-                NavigationLink(destination: VectorView()) {
-                    Text("Vector Editor")
-                        .foregroundColor(.white)
-                        .font(Font.system(size: 16).weight(.medium))
-                        .frame(maxWidth: 500, maxHeight: 60)
-                        .background(Color.blue)
-                        .cornerRadius(12)
-                }
-                NavigationLink(destination: CubeView()) {
-                    Text("3D Cube")
-                        .foregroundColor(.white)
-                        .font(Font.system(size: 16).weight(.medium))
-                        .frame(maxWidth: 500, maxHeight: 60)
-                        .background(Color.blue)
-                        .cornerRadius(12)
-                }
+                .padding()
             }
-            .padding([.bottom, .horizontal], 30)
         }
+        .navigationBarHidden(true)
+        .navigationBarTitle("")
+        .navigationBarBackButtonHidden(true)
     }
 }
 
-struct CubesView:View {
-    var body: some View {
-        ZStack{
-            ForEach(0 ..< 10){index in
-                    CubeSetView()
-                    .offset(x:100)
-                    .rotationEffect(.degrees(Double(index) * 60 ))
-                
-            }
-        }
-    }
-}
-
-struct CubeSetView : View {
-    @ObservedObject var viewModel = WelcomeViewModel()
-    
-    var body: some View {
-        ZStack{
-            ForEach(0..<viewModel.allCubes.count, id : \.self){index in
-                cubeView(index:index)
-                
-            }
-        }
-        .onAppear(perform: viewModel.startRotation)
-    }
-    
-    private func cubeView(index: Int) -> some View{
-        let offset = viewModel.allIndicies[index]
-        return viewModel.allCubes[index].view
-            .offset(x: offset.0,y: offset.1)
-            .zIndex(offset.2)
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        WelcomeView()
     }
 }
