@@ -21,7 +21,11 @@ struct EditingView: View {
                 // Top button bar
                 HStack {
                     
-                    NavigationLink(destination: GalleryView(editImageViewModel: EditImageViewModel())){
+                    if !editImageViewModel.isProcessing {
+                        NavigationLink(destination: GalleryView(editImageViewModel: editImageViewModel)){
+                            TopPanelBackButton(iconName: "chevron.backward")
+                        }
+                    } else {
                         TopPanelBackButton(iconName: "chevron.backward")
                     }
                     
@@ -29,35 +33,59 @@ struct EditingView: View {
                     
                     Button(action:{
                         // Undo
-                        editImageViewModel.undo()
+                        if !editImageViewModel.isProcessing {
+                            editImageViewModel.undo()
+                        }
+                        
                     }) {
                         TopPanelButton(iconName: "arrow.uturn.backward")
                     }
                     Button(action:{
                         // Clear
-                        editImageViewModel.resetToOriginalImage()
+                        if !editImageViewModel.isProcessing {
+                            editImageViewModel.resetToOriginalImage()
+                        }
+                        
                     }) {
                         TopPanelButton(iconName: "arrow.circlepath")
                     }
                     Button(action:{
                         // Redo
-                        editImageViewModel.redo()
+                        if !editImageViewModel.isProcessing {
+                            editImageViewModel.redo()
+                        }
+                        
                     }) {
                         TopPanelButton(iconName: "arrow.uturn.forward")
                     }
                     
                     Spacer()
                     
-                    Button(action:{
-                        editImageViewModel.saveImage()
-                    }) {
-                        Text("Save")
-                            .foregroundColor(.white)
-                            .font(Font.system(size: 16).weight(.medium))
-                            .frame(width: 60, height: 40)
-                            .background(Color.blue)
-                            .cornerRadius(10)
+                    if !editImageViewModel.isProcessing {
+                        Button(action:{
+                            editImageViewModel.saveImage()
+                        }) {
+                            Text("Save")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 16).weight(.medium))
+                                .frame(width: 60, height: 40)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
                     }
+                    else{
+                        Button(action:{
+                            
+                        }) {
+                            Text("Save")
+                                .foregroundColor(.white)
+                                .font(Font.system(size: 16).weight(.medium))
+                                .frame(width: 60, height: 40)
+                                .background(Color.gray)
+                                .cornerRadius(10)
+                        }
+                    }
+                    
                 }
                 .padding()
                 
@@ -168,83 +196,93 @@ struct EditingView: View {
                         
                         Button(action:{
                             // Rotate
-                            isRotateActive = true
-                            isFiltersActive = false
-                            isResizeActive = false
-                            isRetouchActive = false
-                            isMaskingActive = false
+                            if !editImageViewModel.isProcessing {
+                                isRotateActive = true
+                                isFiltersActive = false
+                                isResizeActive = false
+                                isRetouchActive = false
+                                isMaskingActive = false
+                            }
                         }) {
                             BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: isRotateActive)
                         }
                         
                         Button(action:{
                             // Filter
-                            isFiltersActive = true
-                            isResizeActive = false
-                            isRotateActive = false
-                            isRetouchActive = false
-                            isMaskingActive = false
+                            if !editImageViewModel.isProcessing {
+                                isFiltersActive = true
+                                isResizeActive = false
+                                isRotateActive = false
+                                isRetouchActive = false
+                                isMaskingActive = false
+                            }
                         }) {
                             BottomPanelButton(iconName: "camera.filters", text: "Filter", isActive: isFiltersActive)
                         }
                         
                         Button(action:{
                             // Resize
-                            isResizeActive = true
-                            isFiltersActive = false
-                            isRotateActive = false
-                            isRetouchActive = false
-                            isMaskingActive = false
+                            if !editImageViewModel.isProcessing {
+                                isResizeActive = true
+                                isFiltersActive = false
+                                isRotateActive = false
+                                isRetouchActive = false
+                                isMaskingActive = false
+                            }
+                            
                         }) {
                             BottomPanelButton(iconName: "square.resize.up", text: "Resize", isActive: isResizeActive)
                         }
                         
                         Button(action:{
                             // Face recognize
-                            editImageViewModel.detectFacesInImage()
+                            if !editImageViewModel.isProcessing {
+                                editImageViewModel.detectFacesInImage()
+                            }
+                            
                         }) {
                             BottomPanelButton(iconName: "faceid", text: "Face AI", isActive: false)
                         }
                         
-                        Button(action:{
-                            // Vector
-                        }) {
-                            BottomPanelButton(iconName: "pencil.and.outline", text: "Vector", isActive: false)
-                        }
                         
                         Button(action:{
                             // Retouch
-                            isRetouchActive = true
-                            isResizeActive = false
-                            isFiltersActive = false
-                            isRotateActive = false
-                            isMaskingActive = false
+                            if !editImageViewModel.isProcessing {
+                                isRetouchActive = true
+                                isResizeActive = false
+                                isFiltersActive = false
+                                isRotateActive = false
+                                isMaskingActive = false
+                            }
+                            
                         }) {
                             BottomPanelButton(iconName: "wand.and.stars.inverse", text: "Retouch", isActive: isRetouchActive)
                         }
                         
                         Button(action:{
                             // Masking
-                            isMaskingActive = true
-                            isRetouchActive = false
-                            isResizeActive = false
-                            isFiltersActive = false
-                            isRotateActive = false
+                            if !editImageViewModel.isProcessing {
+                                isMaskingActive = true
+                                isRetouchActive = false
+                                isResizeActive = false
+                                isFiltersActive = false
+                                isRotateActive = false
+                            }
+                            
                         }) {
                             BottomPanelButton(iconName: "theatermasks", text: "Masking", isActive: isMaskingActive)
                         }
                         
                         Button(action:{
                             // Affine
+                            if !editImageViewModel.isProcessing {
+                                
+                            }
                         }) {
                             BottomPanelButton(iconName: "slider.vertical.3", text: "Affine", isActive: false)
                         }
                         
-                        Button(action:{
-                            // Cube
-                        }) {
-                            BottomPanelButton(iconName: "cube.fill", text: "Cube", isActive: false)
-                        }
+                        
                         
                     }
                     .padding(.horizontal, 30)

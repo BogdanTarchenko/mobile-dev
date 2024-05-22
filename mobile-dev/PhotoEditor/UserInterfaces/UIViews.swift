@@ -71,18 +71,31 @@ struct RotateUI: View {
             .foregroundColor(.gray)
             .font(Font.system(size: 18).weight(.light))
             .padding()
-        
-        Button(action:{
-            // Rotate UI button
-            rotateAction?()
-        }) {
-            Text("Rotate")
-                .foregroundColor(.white)
-                .font(Font.system(size: 18).weight(.medium))
-                .frame(width: 160, height: 55)
-                .background(Color.blue)
-                .cornerRadius(10)
+        if !editImageViewModel.isProcessing {
+            Button(action:{
+                // Rotate UI button
+                rotateAction?()
+            }) {
+                Text("Rotate")
+                    .foregroundColor(.white)
+                    .font(Font.system(size: 18).weight(.medium))
+                    .frame(width: 160, height: 55)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+            }
         }
+        else {
+            Button(action:{
+            }) {
+                Text("Rotate")
+                    .foregroundColor(.white)
+                    .font(Font.system(size: 18).weight(.medium))
+                    .frame(width: 160, height: 55)
+                    .background(Color.gray)
+                    .cornerRadius(10)
+            }
+        }
+        
         Spacer()
     }
 }
@@ -105,6 +118,7 @@ struct ResizeUI: View {
                 .font(Font.system(size: 18).weight(.light))
                 .padding()
             
+        if !editImageViewModel.isProcessing {
             Button(action:{
                 // Resize UI button
                 resizeAction?()
@@ -116,6 +130,19 @@ struct ResizeUI: View {
                     .background(Color.blue)
                     .cornerRadius(10)
             }
+        }
+        else {
+            Button(action:{
+            }) {
+                Text("Resize")
+                    .foregroundColor(.white)
+                    .font(Font.system(size: 18).weight(.medium))
+                    .frame(width: 160, height: 55)
+                    .background(Color.gray)
+                    .cornerRadius(10)
+            }
+        }
+           
             Spacer()
     }
 }
@@ -130,39 +157,73 @@ struct FiltersUI: View {
     
     var body: some View {
             HStack {
-                Button(action:{
-                    // Negative
-                    negativeAction?()
-                }) {
-                    BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
+                if !editImageViewModel.isProcessing {
+                    Button(action:{
+                        // Negative
+                        negativeAction?()
+                    }) {
+                        BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action:{
+                        // Mosaic
+                        mosaicAction?()
+                    }) {
+                        BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action:{
+                        // Median
+                        medianAction?()
+                    }) {
+                        BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action:{
+                        // Gaussian Blur
+                        gaussianBlurAction?()
+                    }) {
+                        BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
+                    }
+                }
+                else {
+                    Button(action:{
+                       
+                    }) {
+                        BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action:{
+                       
+                    }) {
+                        BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action:{
+                      
+                    }) {
+                        BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action:{
+                      
+                    }) {
+                        BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
+                    }
                 }
                 
-                Spacer()
-                
-                Button(action:{
-                    // Mosaic
-                    mosaicAction?()
-                }) {
-                    BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
-                }
-                
-                Spacer()
-                
-                Button(action:{
-                    // Median
-                    medianAction?()
-                }) {
-                    BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
-                }
-                
-                Spacer()
-                
-                Button(action:{
-                    // Gaussian Blur
-                    gaussianBlurAction?()
-                }) {
-                    BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
-                }
             }
             .padding(.horizontal, 30)
         
@@ -287,17 +348,32 @@ struct MaskingUI: View {
                 .font(Font.system(size: 18).weight(.light))
                 .padding()
             }
-        
-        Button(action:{
-            maskingAction?()
-        }) {
-            Text("Start")
-                .foregroundColor(.white)
-                .font(Font.system(size: 16).weight(.medium))
-                .frame(maxWidth: 200, maxHeight: 40)
-                .background(Color.blue)
-                .cornerRadius(10)
-        }
+        if !editImageViewModel.isProcessing {
+            Button(action:{
+                maskingAction?()
+            }) {
+                Text("Start")
+                    .foregroundColor(.white)
+                    .font(Font.system(size: 16).weight(.medium))
+                    .frame(maxWidth: 200, maxHeight: 40)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+            }
             .padding(30)
+        }
+        else {
+            Button(action:{
+                maskingAction?()
+            }) {
+                Text("Start")
+                    .foregroundColor(.white)
+                    .font(Font.system(size: 16).weight(.medium))
+                    .frame(maxWidth: 200, maxHeight: 40)
+                    .background(Color.gray)
+                    .cornerRadius(10)
+            }
+            .padding(30)
+        }
+        
         }
 }
