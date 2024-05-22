@@ -39,7 +39,7 @@ enum ResizeModel {
     
     static func gaussianBlur(pixelData: [UInt8], width: Int, height: Int, radius: Int = 1) -> [UInt8] {
         let kernelSize = 2 * radius + 1
-        let kernel = createGaussianKernel(size: kernelSize, sigma: 1.5)
+        let kernel = createGaussianKernel(size: kernelSize, sigma: 1)
         var extendedData = Array(repeating: UInt8(0), count: (width + 2 * radius) * (height + 2 * radius) * 4)
 
         for y in 0..<height {
@@ -144,6 +144,7 @@ enum ResizeModel {
         let newHeight = Int(CGFloat(height) * CGFloat(scale))
         var resizedPixelData: [UInt8] = Array(repeating: 0, count: newWidth * newHeight * 4)
 
+        
         DispatchQueue.concurrentPerform(iterations: newHeight) { y in
             for x in 0..<newWidth {
                 let sourceIndex = (x + y * newWidth) * 4
@@ -157,9 +158,10 @@ enum ResizeModel {
             }
         }
         
-        if scale < 1 {
+        if scale < 1 && min(newWidth, newHeight) < 800 {
             resizedPixelData = gaussianBlur(pixelData: resizedPixelData, width: newWidth, height: newHeight)
         }
+       
         guard let resizedContext = CGContext(data: &resizedPixelData, width: newWidth, height: newHeight, bitsPerComponent: 8, bytesPerRow: newWidth * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
               let resizedImage = resizedContext.makeImage() else {
             return image
