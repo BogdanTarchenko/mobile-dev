@@ -5,12 +5,14 @@ struct GalleryView: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     @State private var selectedImageData: Data? = nil
     @State private var selectedItem: PhotosPickerItem? = nil
-    
+    @State private var showCamera = false
+    @State private var selectedImage: UIImage?
+
     var body: some View {
         NavigationView {
             VStack(alignment: .center, spacing: 15) {
                 ZStack {
-                    NavigationLink(destination: WelcomeView()){
+                    NavigationLink(destination: WelcomeView()) {
                         BottomPanelButton(iconName: "chevron.backward", text: "Back", isActive: false)
                         Spacer()
                     }
@@ -25,9 +27,9 @@ struct GalleryView: View {
                         )
                         .edgesIgnoringSafeArea(.top)
                 }
-                
-                if selectedItem == nil {
-                    HStack() {
+
+                if selectedItem == nil && selectedImage == nil {
+                    HStack {
                         PhotosPicker(
                             selection: $selectedItem,
                             matching: .images,
@@ -39,6 +41,22 @@ struct GalleryView: View {
                                 .opacity(0.25)
                                 .overlay(
                                     Image(systemName: "plus")
+                                        .foregroundColor(Color.black)
+                                        .font(Font.system(size: 60))
+                                )
+                                .aspectRatio(1/1, contentMode: .fit)
+                        }
+                        .padding(.leading)
+                        
+                        Button(action: {
+                            showCamera.toggle()
+                        }) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .frame(maxWidth: 110, maxHeight: 110)
+                                .foregroundColor(Color.gray)
+                                .opacity(0.25)
+                                .overlay(
+                                    Image(systemName: "camera")
                                         .foregroundColor(Color.black)
                                         .font(Font.system(size: 60))
                                 )
@@ -78,7 +96,7 @@ struct GalleryView: View {
                     Spacer()
                 }
                 
-                if selectedItem != nil {
+                if selectedItem != nil || selectedImage != nil {
                     PhotosPicker(
                         selection: $selectedItem,
                         matching: .images,
@@ -87,6 +105,22 @@ struct GalleryView: View {
                         if let selectedImageData = selectedImageData,
                            let uiImage = UIImage(data: selectedImageData) {
                             Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(maxHeight: 300)
+                                .cornerRadius(12)
+                                .padding()
+                                .opacity(0.6)
+                                .overlay(
+                                    HStack {
+                                        Image(systemName: "plus")
+                                            .foregroundColor(.black)
+                                            .font(Font.system(size: 60).weight(.medium))
+                                            .padding(.trailing, 8)
+                                    }
+                                )
+                        } else if let selectedImage = selectedImage {
+                            Image(uiImage: selectedImage)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(maxHeight: 300)
@@ -138,9 +172,51 @@ struct GalleryView: View {
                 }
             }
         }
+        .onChange(of: selectedImage) { newImage in
+            if let newImage = newImage {
+                editImageViewModel.originalImage = newImage
+                editImageViewModel.nonChangedImage = newImage
+            }
+        }
         .navigationBarHidden(true)
         .navigationBarTitle("")
         .navigationBarBackButtonHidden(true)
+        .fullScreenCover(isPresented: $showCamera) {
+            AccessCameraView(selectedImage: $selectedImage)
+        }
+    }
+}
+
+struct AccessCameraView: UIViewControllerRepresentable {
+    @Binding var selectedImage: UIImage?
+    @Environment(\.presentationMode) var isPresented
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .camera
+        imagePicker.allowsEditing = true
+        imagePicker.delegate = context.coordinator
+        return imagePicker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(picker: self)
+    }
+
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        var picker: AccessCameraView
+
+        init(picker: AccessCameraView) {
+            self.picker = picker
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            guard let selectedImage = info[.originalImage] as? UIImage else { return }
+            self.picker.selectedImage = selectedImage
+            self.picker.isPresented.wrappedValue.dismiss()
+        }
     }
 }
 
