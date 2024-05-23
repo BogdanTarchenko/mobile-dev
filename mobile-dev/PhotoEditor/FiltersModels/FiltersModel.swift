@@ -180,7 +180,7 @@ enum FiltersModel {
         let kernel = createGaussianKernel(size: kernelSize, sigma: 2.33)
         var extendedData = Array(repeating: UInt8(0), count: (width + 2 * radius) * (height + 2 * radius) * 4)
 
-        for y in 0..<height {
+        DispatchQueue.concurrentPerform(iterations: height) { y in
             for x in 0..<width {
                 let indexOriginal = (y * width + x) * 4
                 let indexExtended = ((y + radius) * (width + 2 * radius) + (x + radius)) * 4
@@ -190,7 +190,7 @@ enum FiltersModel {
             }
         }
 
-        for y in 0..<height + 2 * radius {
+        DispatchQueue.concurrentPerform(iterations: height + 2 * radius) { y in
             for x in 0..<width + 2 * radius {
                 if y < radius || y >= height + radius || x < radius || x >= width + radius {
                     let nearestY = min(max(y, radius), height + radius - 1)
@@ -206,7 +206,7 @@ enum FiltersModel {
 
         var blurredData = Array(repeating: UInt8(0), count: width * height * 4)
 
-        for y in 0..<height {
+        DispatchQueue.concurrentPerform(iterations: height) { y in
             for x in 0..<width {
                 var sum = [CGFloat](repeating: 0.0, count: 4)
                 for ky in 0..<kernelSize {
@@ -229,6 +229,7 @@ enum FiltersModel {
 
         return blurredData
     }
+
 
 
         private static func createGaussianKernel(size: Int, sigma: CGFloat) -> [CGFloat] {

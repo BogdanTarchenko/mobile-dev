@@ -132,7 +132,18 @@ struct VectorView: View {
                                 if canAddPoints {
                                     let location = value.location
                                     if !isDeletingPoints {
-                                        points.append(location)
+                                        var closeIndex: Int?
+                                        for (index, point) in points.enumerated() {
+                                            if distanceBetween(location, point) < 20 {
+                                                closeIndex = index
+                                                break
+                                            }
+                                        }
+                                        if let index = closeIndex {
+                                            points.append(points[index])
+                                        } else {
+                                            points.append(location)
+                                        }
                                         redoStack.removeAll()
                                         updateSpline()
                                     } else {
@@ -145,6 +156,8 @@ struct VectorView: View {
                                 }
                             }
                     )
+
+
                 }
                 
                 // Buttons UI
