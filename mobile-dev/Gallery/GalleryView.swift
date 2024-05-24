@@ -7,7 +7,7 @@ struct GalleryView: View {
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var showCamera = false
     @State private var selectedImage: UIImage?
-
+    
     var body: some View {
         NavigationView {
             VStack(alignment: .center, spacing: 15) {
@@ -27,7 +27,7 @@ struct GalleryView: View {
                         )
                         .edgesIgnoringSafeArea(.top)
                 }
-
+                
                 if selectedItem == nil && selectedImage == nil {
                     HStack {
                         PhotosPicker(
@@ -190,7 +190,7 @@ struct GalleryView: View {
 struct AccessCameraView: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     @Environment(\.presentationMode) var isPresented
-
+    
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .camera
@@ -198,20 +198,20 @@ struct AccessCameraView: UIViewControllerRepresentable {
         imagePicker.delegate = context.coordinator
         return imagePicker
     }
-
+    
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
+    
     func makeCoordinator() -> Coordinator {
         return Coordinator(picker: self)
     }
-
+    
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         var picker: AccessCameraView
-
+        
         init(picker: AccessCameraView) {
             self.picker = picker
         }
-
+        
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             guard let selectedImage = info[.originalImage] as? UIImage else { return }
             self.picker.selectedImage = selectedImage

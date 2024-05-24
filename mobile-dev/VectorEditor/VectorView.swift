@@ -50,7 +50,7 @@ struct VectorView: View {
     @State private var undoStack: [CGPoint] = []
     @State private var redoStack: [CGPoint] = []
     @State private var isDeletingPoints = false
-
+    
     var body: some View {
         NavigationView {
             VStack(alignment: .center, spacing: 15) {
@@ -100,7 +100,7 @@ struct VectorView: View {
                     }
                     .disabled(!canAddPoints)
                 }
-
+                
                 GeometryReader { geometry in
                     Canvas { context, size in
                         
@@ -156,8 +156,8 @@ struct VectorView: View {
                                 }
                             }
                     )
-
-
+                    
+                    
                 }
                 
                 // Buttons UI
@@ -193,52 +193,52 @@ struct VectorView: View {
         .navigationBarTitle("")
         .navigationBarBackButtonHidden(true)
     }
-
+    
     func updateSpline() {
         splinePoints = splineInterpolation(points: points)
     }
     
     func splineInterpolation(points: [CGPoint]) -> [CGPoint] {
-            var splinePoints: [CGPoint] = []
-            
-            if points.count < 2 {
-                return splinePoints
-            }
-            
-            for i in 0..<(points.count - 1) {
-                let p0 = points[max(0, i - 1)]
-                let p1 = points[i]
-                let p2 = points[min(points.count - 1, i + 1)]
-                let p3 = points[min(points.count - 1, i + 2)]
-                
-                for t in stride(from: 0, through: 1, by: 0.001) {
-                    let x = 0.5 * ((2 * p1.x) + (-p0.x + p2.x) * t + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * pow(t, 2) + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * pow(t, 3))
-                    let y = 0.5 * ((2 * p1.y) + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * pow(t, 2) + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * pow(t, 3))
-                    
-                    splinePoints.append(CGPoint(x: x, y: y))
-                }
-            }
-            
+        var splinePoints: [CGPoint] = []
+        
+        if points.count < 2 {
             return splinePoints
         }
-
+        
+        for i in 0..<(points.count - 1) {
+            let p0 = points[max(0, i - 1)]
+            let p1 = points[i]
+            let p2 = points[min(points.count - 1, i + 1)]
+            let p3 = points[min(points.count - 1, i + 2)]
+            
+            for t in stride(from: 0, through: 1, by: 0.001) {
+                let x = 0.5 * ((2 * p1.x) + (-p0.x + p2.x) * t + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * pow(t, 2) + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * pow(t, 3))
+                let y = 0.5 * ((2 * p1.y) + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * pow(t, 2) + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * pow(t, 3))
+                
+                splinePoints.append(CGPoint(x: x, y: y))
+            }
+        }
+        
+        return splinePoints
+    }
+    
     func undo() {
         guard let lastPoint = points.popLast() else { return }
         redoStack.append(lastPoint)
         updateSpline()
     }
-
+    
     func redo() {
         guard let lastRedoPoint = redoStack.popLast() else { return }
         points.append(lastRedoPoint)
         updateSpline()
     }
-
+    
     func clear() {
-            undoStack = points
-            points.removeAll()
-            redoStack.removeAll()
-            updateSpline()
+        undoStack = points
+        points.removeAll()
+        redoStack.removeAll()
+        updateSpline()
     }
 }
 

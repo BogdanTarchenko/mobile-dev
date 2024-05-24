@@ -71,7 +71,7 @@ class EditImageViewModel: ObservableObject {
         undoStack.removeAll()
         redoStack.removeAll()
     }
-
+    
     // Filters
     func rotateImage() {
         isProcessing = true
@@ -167,12 +167,12 @@ class EditImageViewModel: ObservableObject {
         guard let image = editedImage else { return }
         let imageSize = image.size
         let convertedPoint = convertPoint(point, fromViewSize: viewSize, toImageSize: imageSize)
-
+        
         guard (0..<imageSize.width).contains(convertedPoint.x),
               (0..<imageSize.height).contains(convertedPoint.y) else {
             return
         }
-
+        
         imageProcessingQueue.async {
             let filteredImage = RetouchModel.applyRetouchFilter(image, centerX: Int(convertedPoint.x), centerY: Int(convertedPoint.y), radius: Int(self.brushSize), retouchStrength: self.retouchStrength)
             
@@ -181,19 +181,19 @@ class EditImageViewModel: ObservableObject {
             }
         }
     }
-
+    
     func convertPoint(_ point: CGPoint, fromViewSize viewSize: CGSize, toImageSize imageSize: CGSize) -> CGPoint {
         let scaleX = viewSize.width / imageSize.width
         let scaleY = viewSize.height / imageSize.height
-
+        
         let scale = min(scaleX, scaleY)
-
+        
         let offsetX = (viewSize.width - imageSize.width * scale) / 2
         let offsetY = (viewSize.height - imageSize.height * scale) / 2
-
+        
         let correctedX = (point.x - offsetX) / scale
         let correctedY = (point.y - offsetY) / scale
-
+        
         return CGPoint(x: correctedX, y: correctedY)
     }
     
@@ -226,16 +226,28 @@ class EditImageViewModel: ObservableObject {
                         self.isProcessing = false
                     }
                 case .failure(let error):
-                    print("Face detection error: \(error)")
                     DispatchQueue.main.async {
+                        self.showAlert(title: "Error", message: "Face detection error: \(error)")
                         self.isProcessing = false
                     }
                 }
             }
         }
     }
-
-
+    
+    // Alerts
+    func showAlert(title: String, message: String) {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = scene.windows.first else {
+            return
+        }
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        window.rootViewController?.present(alert, animated: true)
+    }
+    
     
     // Save
     func saveImage() {

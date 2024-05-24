@@ -66,7 +66,7 @@ struct RotateUI: View {
         .onAppear {
             editImageViewModel.rotateSliderValue = rotateSliderValue
         }
-            
+        
         Text("Angle: \(rotateSliderValue)°")
             .foregroundColor(.gray)
             .font(Font.system(size: 18).weight(.light))
@@ -106,18 +106,18 @@ struct ResizeUI: View {
     var resizeAction: (() -> Void)?
     
     var body: some View {
-            Slider(value: $resizeSliderValue, in: 0.5...2, step: 0.1)
-                .accentColor(.gray)
-                .padding(.horizontal)
-                .onChange(of: resizeSliderValue) { newValue in
-                    editImageViewModel.resizeSliderValue = newValue
-                }
-            
-            Text("Scaling: \(resizeSliderValue, specifier: "%.2f")x")
-                .foregroundColor(.gray)
-                .font(Font.system(size: 18).weight(.light))
-                .padding()
-            
+        Slider(value: $resizeSliderValue, in: 0.5...2, step: 0.1)
+            .accentColor(.gray)
+            .padding(.horizontal)
+            .onChange(of: resizeSliderValue) { newValue in
+                editImageViewModel.resizeSliderValue = newValue
+            }
+        
+        Text("Scaling: \(resizeSliderValue, specifier: "%.2f")x")
+            .foregroundColor(.gray)
+            .font(Font.system(size: 18).weight(.light))
+            .padding()
+        
         if !editImageViewModel.isProcessing {
             Button(action:{
                 // Resize UI button
@@ -142,8 +142,8 @@ struct ResizeUI: View {
                     .cornerRadius(10)
             }
         }
-           
-            Spacer()
+        
+        Spacer()
     }
 }
 
@@ -156,76 +156,76 @@ struct FiltersUI: View {
     var gaussianBlurAction: (() -> Void)?
     
     var body: some View {
-            HStack {
-                if !editImageViewModel.isProcessing {
-                    Button(action:{
-                        // Negative
-                        negativeAction?()
-                    }) {
-                        BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action:{
-                        // Mosaic
-                        mosaicAction?()
-                    }) {
-                        BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action:{
-                        // Median
-                        medianAction?()
-                    }) {
-                        BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action:{
-                        // Gaussian Blur
-                        gaussianBlurAction?()
-                    }) {
-                        BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
-                    }
-                }
-                else {
-                    Button(action:{
-                       
-                    }) {
-                        BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action:{
-                       
-                    }) {
-                        BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action:{
-                      
-                    }) {
-                        BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action:{
-                      
-                    }) {
-                        BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
-                    }
+        HStack {
+            if !editImageViewModel.isProcessing {
+                Button(action:{
+                    // Negative
+                    negativeAction?()
+                }) {
+                    BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
                 }
                 
+                Spacer()
+                
+                Button(action:{
+                    // Mosaic
+                    mosaicAction?()
+                }) {
+                    BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Median
+                    medianAction?()
+                }) {
+                    BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Gaussian Blur
+                    gaussianBlurAction?()
+                }) {
+                    BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
+                }
             }
-            .padding(.horizontal, 30)
+            else {
+                Button(action:{
+                    
+                }) {
+                    BottomPanelButton(iconName: "minus.diamond", text: "Negative", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    
+                }) {
+                    BottomPanelButton(iconName: "mosaic", text: "Mosaic", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    
+                }) {
+                    BottomPanelButton(iconName: "divide.square", text: "Median", isActive: false)
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    
+                }) {
+                    BottomPanelButton(iconName: "laser.burst", text: "Gaussian blur", isActive: false)
+                }
+            }
+            
+        }
+        .padding(.horizontal, 30)
         
         Spacer()
         
@@ -241,7 +241,7 @@ struct FiltersUI: View {
         .onAppear {
             editImageViewModel.mosaicSliderValue = mosaicSliderValue
         }
-            
+        
         Text("Mosaic block size: \(mosaicSliderValue) px")
             .foregroundColor(.gray)
             .font(Font.system(size: 18).weight(.light))
@@ -260,26 +260,26 @@ struct RetouchUI: View {
                     .foregroundColor(.white)
                     .font(Font.system(size: 16).weight(.light))
                     .padding(.vertical, 5)
-
+                
                 Slider(value: $editImageViewModel.brushSize, in: 5...100, step: 1)
                     .accentColor(.blue)
                     .padding(.horizontal, 20)
             }
             .padding(.vertical, 10)
-
+            
             VStack {
                 Text("Retouch Strength: \(String(format: "%.2f", editImageViewModel.retouchStrength))")
                     .foregroundColor(.white)
                     .font(Font.system(size: 16).weight(.light))
                     .padding(.vertical, 5)
-
+                
                 Slider(value: $editImageViewModel.retouchStrength, in: 0...1)
                     .accentColor(.blue)
                     .padding(.horizontal, 20)
             }
             .padding(.vertical, 10)
         }
-
+        
     }
 }
 
@@ -306,7 +306,7 @@ struct MaskingUI: View {
             .onAppear {
                 editImageViewModel.thresholdSliderValue = thresholdSliderValue
             }
-                
+            
             Text("Threshold: \(thresholdSliderValue)")
                 .foregroundColor(.gray)
                 .font(Font.system(size: 18).weight(.light))
@@ -324,7 +324,7 @@ struct MaskingUI: View {
             .onAppear {
                 editImageViewModel.amountSliderValue = amountSliderValue
             }
-                
+            
             Text("Amount: \(amountSliderValue)")
                 .foregroundColor(.gray)
                 .font(Font.system(size: 18).weight(.light))
@@ -342,12 +342,12 @@ struct MaskingUI: View {
             .onAppear {
                 editImageViewModel.radiusSliderValue = radiusSliderValue
             }
-                
+            
             Text("Radius: \(radiusSliderValue)")
                 .foregroundColor(.gray)
                 .font(Font.system(size: 18).weight(.light))
                 .padding()
-            }
+        }
         if !editImageViewModel.isProcessing {
             Button(action:{
                 maskingAction?()
@@ -375,5 +375,5 @@ struct MaskingUI: View {
             .padding(30)
         }
         
-        }
+    }
 }

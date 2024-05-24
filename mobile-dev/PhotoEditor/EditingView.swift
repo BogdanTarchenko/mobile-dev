@@ -11,7 +11,7 @@ struct EditingView: View {
     
     @State var touchLocation: CGPoint?
     
-
+    
     
     var body: some View {
         NavigationView {
@@ -112,27 +112,27 @@ struct EditingView: View {
                     }
                 } else if isRetouchActive {
                     GeometryReader { geometry in
-                                VStack {
-                                    if let editedImage = editImageViewModel.editedImage {
-                                        Image(uiImage: editedImage)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(maxWidth: .infinity, maxHeight: 400)
-                                            .gesture(
-                                                DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                                                    .onChanged { value in
-                                                        touchLocation = value.location
-                                                        if isRetouchActive {
-                                                            editImageViewModel.retouchImage(at: value.location, in: geometry.size)
-                                                        }
-                                                    }
-                                                    .onEnded { _ in
-                                                        touchLocation = nil
-                                                    }
-                                            )
-                                    }
-                                }
+                        VStack {
+                            if let editedImage = editImageViewModel.editedImage {
+                                Image(uiImage: editedImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(maxWidth: .infinity, maxHeight: 400)
+                                    .gesture(
+                                        DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                                            .onChanged { value in
+                                                touchLocation = value.location
+                                                if isRetouchActive {
+                                                    editImageViewModel.retouchImage(at: value.location, in: geometry.size)
+                                                }
+                                            }
+                                            .onEnded { _ in
+                                                touchLocation = nil
+                                            }
+                                    )
                             }
+                        }
+                    }
                 } else {
                     if let editedImage = editImageViewModel.editedImage {
                         Image(uiImage: editedImage)

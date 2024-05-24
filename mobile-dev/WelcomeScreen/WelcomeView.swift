@@ -17,7 +17,7 @@ struct WelcomeView: View {
                             Text("Powered by HITs")
                                 .foregroundColor(.white)
                                 .font(Font.system(size: 18).weight(.medium))
-                            )
+                        )
                     
                     Text("Photo Editor")
                         .font(Font.system(size: 36).weight(.bold))

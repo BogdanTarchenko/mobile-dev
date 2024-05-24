@@ -1,10 +1,11 @@
 import SwiftUI
+// Анимация загрузки (дизайн) с ролика на ютубе
 
 struct CubesView:View {
     var body: some View {
         ZStack{
             ForEach(0 ..< 10){index in
-                    CubeSetView()
+                CubeSetView()
                     .offset(x:100)
                     .rotationEffect(.degrees(Double(index) * 60 ))
                 

@@ -107,7 +107,7 @@ enum FiltersModel {
     }
     
     
-
+    
     
     // Median
     static func applyMedianFilter(_ image: UIImage?) -> UIImage? {
@@ -179,7 +179,7 @@ enum FiltersModel {
         let kernelSize = 2 * radius + 1
         let kernel = createGaussianKernel(size: kernelSize, sigma: 2.33)
         var extendedData = Array(repeating: UInt8(0), count: (width + 2 * radius) * (height + 2 * radius) * 4)
-
+        
         DispatchQueue.concurrentPerform(iterations: height) { y in
             for x in 0..<width {
                 let indexOriginal = (y * width + x) * 4
@@ -189,7 +189,7 @@ enum FiltersModel {
                 }
             }
         }
-
+        
         DispatchQueue.concurrentPerform(iterations: height + 2 * radius) { y in
             for x in 0..<width + 2 * radius {
                 if y < radius || y >= height + radius || x < radius || x >= width + radius {
@@ -203,9 +203,9 @@ enum FiltersModel {
                 }
             }
         }
-
+        
         var blurredData = Array(repeating: UInt8(0), count: width * height * 4)
-
+        
         DispatchQueue.concurrentPerform(iterations: height) { y in
             for x in 0..<width {
                 var sum = [CGFloat](repeating: 0.0, count: 4)
@@ -226,33 +226,33 @@ enum FiltersModel {
                 }
             }
         }
-
+        
         return blurredData
     }
-
-
-
-        private static func createGaussianKernel(size: Int, sigma: CGFloat) -> [CGFloat] {
-            let center = size / 2
-            var kernel = [CGFloat](repeating: 0, count: size * size)
-            var sum: CGFloat = 0
-
-            for i in 0..<size {
-                for j in 0..<size {
-                    let x = CGFloat(i - center)
-                    let y = CGFloat(j - center)
-                    let exponent = -(x*x + y*y) / (2 * sigma * sigma)
-                    kernel[i * size + j] = exp(exponent)
-                    sum += kernel[i * size + j]
-                }
+    
+    
+    
+    private static func createGaussianKernel(size: Int, sigma: CGFloat) -> [CGFloat] {
+        let center = size / 2
+        var kernel = [CGFloat](repeating: 0, count: size * size)
+        var sum: CGFloat = 0
+        
+        for i in 0..<size {
+            for j in 0..<size {
+                let x = CGFloat(i - center)
+                let y = CGFloat(j - center)
+                let exponent = -(x*x + y*y) / (2 * sigma * sigma)
+                kernel[i * size + j] = exp(exponent)
+                sum += kernel[i * size + j]
             }
-
-            for i in 0..<size*size {
-                kernel[i] /= sum
-            }
-
-            return kernel
         }
+        
+        for i in 0..<size*size {
+            kernel[i] /= sum
+        }
+        
+        return kernel
+    }
     
     static func applyGaussianBlurFilter(_ image: UIImage?) -> UIImage? {
         guard let cgImage = image?.cgImage else {
@@ -291,5 +291,5 @@ enum FiltersModel {
         
         return UIImage(cgImage: bluredImage)
     }
-
+    
 }

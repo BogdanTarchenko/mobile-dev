@@ -1,4 +1,5 @@
 import SwiftUI
+// Анимация загрузки (дизайн) с ролика на ютубе
 
 class CubesViewModel: ObservableObject{
     @Published var allCubes = AllCubes.allCases
