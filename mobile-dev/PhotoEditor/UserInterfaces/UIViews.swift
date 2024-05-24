@@ -377,3 +377,24 @@ struct MaskingUI: View {
         
     }
 }
+
+struct TransformationUI: View {
+    @ObservedObject var editImageViewModel: EditImageViewModel
+    var transformAction: (() -> Void)?
+    
+    var body: some View {
+            Button(action:{
+                // Transform UI button
+                transformAction?()
+            }) {
+                Text("Transform")
+                    .foregroundColor(.white)
+                    .font(Font.system(size: 18).weight(.medium))
+                    .frame(width: 160, height: 55)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                    .padding(.vertical, 10)
+            }
+            Spacer()
+    }
+}

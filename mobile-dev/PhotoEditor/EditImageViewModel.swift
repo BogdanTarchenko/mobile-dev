@@ -31,6 +31,9 @@ class EditImageViewModel: ObservableObject {
     @Published var brushSize: Double = 30
     @Published var retouchStrength: Double = 0.5
     
+    @Published var affinePoints: [CGPoint] = []
+    @Published var geometryPoints: [CGPoint] = []
+    
     private var undoStack: [UIImage] = []
     private var redoStack: [UIImage] = []
     
@@ -207,6 +210,61 @@ class EditImageViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.originalImage = maskedImage
                 self.editedImage = maskedImage
+                self.isProcessing = false
+            }
+        }
+    }
+    
+    func convertPointAffine(_ point: CGPoint, fromViewSize viewSize: CGSize, toImageSize imageSize: CGSize) -> CGPoint {
+            let scaleX = viewSize.width / imageSize.width
+            let scaleY = viewSize.height / imageSize.height
+
+            let scale = max(scaleX, scaleY)
+
+            let offsetX = (viewSize.width - imageSize.width * scale) / 2
+            let offsetY = (viewSize.height - imageSize.height * scale) / 2
+
+            let correctedX = (point.x - offsetX) / scale
+            let correctedY = (point.y - offsetY) / scale
+
+            return CGPoint(x: correctedX, y: correctedY)
+    }
+    
+    func addAffinePoint(at point: CGPoint, in viewSize: CGSize) {
+            guard let image = editedImage else { return }
+            let imageSize = image.size
+            let convertedPoint = convertPointAffine(point, fromViewSize: viewSize, toImageSize: imageSize)
+            affinePoints.append(convertedPoint)
+    }
+    
+    func checkIfEquals(point: CGPoint) -> Bool {
+            if (affinePoints.count + 1 <= 3) {
+                for i in 0..<affinePoints.count {
+                    if point == affinePoints[i] { return true }
+                }
+            }
+            else {
+                for i in 3..<affinePoints.count {
+                    if point == affinePoints[i] { return true }
+                }
+            }
+            
+            return false
+    }
+    
+    func applyAffineTransformation() {
+        if self.affinePoints.count != 6 { return }
+        isProcessing = true
+        addCurrentImageToChangeListArray()
+        
+        imageProcessingQueue.async {
+            let transformedImage = AffineTransformationModel.applyAffineTransformation(self.originalImage, points: self.affinePoints)
+            self.affinePoints = []
+            self.geometryPoints = []
+            
+            DispatchQueue.main.async {
+                self.originalImage = transformedImage
+                self.editedImage = transformedImage
                 self.isProcessing = false
             }
         }

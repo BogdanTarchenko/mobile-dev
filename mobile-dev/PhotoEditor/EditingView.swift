@@ -8,10 +8,11 @@ struct EditingView: View {
     @State private var isFiltersActive = false
     @State private var isRetouchActive = false
     @State private var isMaskingActive = false
+    @State private var isTransformingActive = false
     
     @State var touchLocation: CGPoint?
     
-    
+    @State var circleColors: [Color] = [.red, .green, .blue, Color(red: 0.5, green: 0, blue: 0), Color(red: 0, green: 0.5, blue: 0), Color(red: 0, green: 0, blue: 0.5)]
     
     var body: some View {
         NavigationView {
@@ -133,7 +134,38 @@ struct EditingView: View {
                             }
                         }
                     }
-                } else {
+                }
+                else if isTransformingActive {
+                    ZStack {
+                        if let editedImage = editImageViewModel.editedImage {
+                            GeometryReader { geometry in
+                                Image(uiImage: editedImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding()
+                                    .frame(maxHeight: 400)
+                                    .gesture(
+                                        DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                                            .onEnded { value in
+                                                if (isTransformingActive && editImageViewModel.affinePoints.count < 6 && !editImageViewModel.checkIfEquals(point: editImageViewModel.convertPointAffine(value.location, fromViewSize: geometry.size, toImageSize: editedImage.size)))
+                                                {
+                                                    editImageViewModel.addAffinePoint(at: value.location, in: geometry.size)
+                                                    editImageViewModel.geometryPoints.append(value.location)
+                                                }
+                                            }
+                                    )
+                            }
+                            ForEach(editImageViewModel.geometryPoints.indices, id: \.self) { index in
+                                let point = editImageViewModel.geometryPoints[index]
+                                Circle()
+                                    .fill(circleColors[index])
+                                    .frame(width: 20, height: 20)
+                                    .position(point)
+                            }
+                        }
+                    }
+                }
+                else {
                     if let editedImage = editImageViewModel.editedImage {
                         Image(uiImage: editedImage)
                             .resizable()
@@ -188,6 +220,13 @@ struct EditingView: View {
                     })
                 }
                 
+                // Transformation UI
+                if isTransformingActive {
+                    TransformationUI(editImageViewModel: editImageViewModel, transformAction: {
+                        editImageViewModel.applyAffineTransformation()
+                    })
+                }
+                
                 Spacer()
                 
                 // Bottom/Scroll button bar
@@ -202,6 +241,7 @@ struct EditingView: View {
                                 isResizeActive = false
                                 isRetouchActive = false
                                 isMaskingActive = false
+                                isTransformingActive = false
                             }
                         }) {
                             BottomPanelButton(iconName: "arrow.uturn.left.square", text: "Rotate", isActive: isRotateActive)
@@ -215,6 +255,7 @@ struct EditingView: View {
                                 isRotateActive = false
                                 isRetouchActive = false
                                 isMaskingActive = false
+                                isTransformingActive = false
                             }
                         }) {
                             BottomPanelButton(iconName: "camera.filters", text: "Filter", isActive: isFiltersActive)
@@ -228,6 +269,7 @@ struct EditingView: View {
                                 isRotateActive = false
                                 isRetouchActive = false
                                 isMaskingActive = false
+                                isTransformingActive = false
                             }
                             
                         }) {
@@ -253,6 +295,7 @@ struct EditingView: View {
                                 isFiltersActive = false
                                 isRotateActive = false
                                 isMaskingActive = false
+                                isTransformingActive = false
                             }
                             
                         }) {
@@ -267,6 +310,7 @@ struct EditingView: View {
                                 isResizeActive = false
                                 isFiltersActive = false
                                 isRotateActive = false
+                                isTransformingActive = false
                             }
                             
                         }) {
@@ -275,14 +319,15 @@ struct EditingView: View {
                         
                         Button(action:{
                             // Affine
-                            if !editImageViewModel.isProcessing {
-                                
-                            }
+                            isMaskingActive = false
+                            isRetouchActive = false
+                            isResizeActive = false
+                            isFiltersActive = false
+                            isRotateActive = false
+                            isTransformingActive = true
                         }) {
                             BottomPanelButton(iconName: "slider.vertical.3", text: "Affine", isActive: false)
                         }
-                        
-                        
                         
                     }
                     .padding(.horizontal, 30)
