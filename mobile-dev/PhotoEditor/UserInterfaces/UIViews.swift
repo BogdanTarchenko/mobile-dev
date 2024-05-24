@@ -314,7 +314,7 @@ struct MaskingUI: View {
             Slider(value: Binding<Double>(
                 get: { Double(thresholdSliderValue) },
                 set: { newValue in thresholdSliderValue = Int(newValue) }
-            ), in: 5...100, step: 1)
+            ), in: 0...100, step: 1)
             .accentColor(.gray)
             .padding(.horizontal)
             .onChange(of: thresholdSliderValue) { newValue in
