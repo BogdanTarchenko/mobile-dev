@@ -102,15 +102,17 @@ enum UnsharpMaskModel {
         
         for y in 0..<height {
             for x in 0..<width {
-                let index = (x + y * width) * 4
-                let value1: Int32 = Int32(pixelData[index])
-                let value2: Int32 = Int32(bluredPixelData[index])
-                let difference: UInt8 = UInt8(abs(value1 - value2))
-                
-                if (difference >= threshold) {
-                    let dk = Int32(Double(difference) * k)
-                    let val = UInt8(max(min(value1 + dk, 255), 0))
-                    maskedPixelData[index] = val
+                for c in 0..<4 {
+                    let index = (x + y * width) * 4 + c
+                    let value1: Int32 = Int32(pixelData[index])
+                    let value2: Int32 = Int32(bluredPixelData[index])
+                    let difference: UInt8 = UInt8(abs(value1 - value2))
+                    
+                    if (difference >= threshold) {
+                        let dk = Int32(Double(difference) * k)
+                        let val = UInt8(max(min(value1 + dk, 255), 0))
+                        maskedPixelData[index] = val
+                    }
                 }
             }
         }
