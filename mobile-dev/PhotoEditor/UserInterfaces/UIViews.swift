@@ -252,6 +252,7 @@ struct FiltersUI: View {
 struct RetouchUI: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     var retouchAction: (() -> Void)?
+    var confirmAction: (() -> Void)?
     
     var body: some View {
         VStack {
@@ -278,6 +279,22 @@ struct RetouchUI: View {
                     .padding(.horizontal, 20)
             }
             .padding(.vertical, 10)
+            
+            VStack {
+                Button(action:{
+                    // Delete all points UI button
+                    confirmAction?()
+                }) {
+                    Text("Confirm")
+                        .foregroundColor(.white)
+                        .font(Font.system(size: 18).weight(.medium))
+                        .frame(width: 160, height: 55)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .padding([.vertical, .horizontal], 10)
+                        .padding(.bottom, 20)
+                }
+            }
         }
         
     }
@@ -381,20 +398,68 @@ struct MaskingUI: View {
 struct TransformationUI: View {
     @ObservedObject var editImageViewModel: EditImageViewModel
     var transformAction: (() -> Void)?
+    var clearAction: (() -> Void)?
     
     var body: some View {
-            Button(action:{
-                // Transform UI button
-                transformAction?()
-            }) {
-                Text("Transform")
-                    .foregroundColor(.white)
-                    .font(Font.system(size: 18).weight(.medium))
-                    .frame(width: 160, height: 55)
-                    .background(Color.blue)
-                    .cornerRadius(10)
-                    .padding(.vertical, 10)
+        HStack {
+            if !editImageViewModel.isProcessing {
+                Button(action:{
+                    // Transform UI button
+                    transformAction?()
+                }) {
+                    Text("Transform")
+                        .foregroundColor(.white)
+                        .font(Font.system(size: 18).weight(.medium))
+                        .frame(width: 160, height: 55)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .padding([.vertical, .horizontal], 10)
+                        .padding(.bottom, 30)
+                }
+                
+                Button(action:{
+                    // Delete all points UI button
+                    clearAction?()
+                }) {
+                    Text("Delete points")
+                        .foregroundColor(.white)
+                        .font(Font.system(size: 18).weight(.medium))
+                        .frame(width: 160, height: 55)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .padding([.vertical, .horizontal], 10)
+                        .padding(.bottom, 30)
+                }
             }
-            Spacer()
+            else {
+                Button(action:{
+                    // Transform UI button
+                    transformAction?()
+                }) {
+                    Text("Transform")
+                        .foregroundColor(.white)
+                        .font(Font.system(size: 18).weight(.medium))
+                        .frame(width: 160, height: 55)
+                        .background(Color.gray)
+                        .cornerRadius(10)
+                        .padding([.vertical, .horizontal], 10)
+                        .padding(.bottom, 30)
+                }
+                
+                Button(action:{
+                    // Delete all points UI button
+                    clearAction?()
+                }) {
+                    Text("Delete points")
+                        .foregroundColor(.white)
+                        .font(Font.system(size: 18).weight(.medium))
+                        .frame(width: 160, height: 55)
+                        .background(Color.gray)
+                        .cornerRadius(10)
+                        .padding([.vertical, .horizontal], 10)
+                        .padding(.bottom, 30)
+                }
+            }
+        }
     }
 }

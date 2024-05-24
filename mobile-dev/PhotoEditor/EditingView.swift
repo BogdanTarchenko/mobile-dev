@@ -152,6 +152,13 @@ struct EditingView: View {
                                                     editImageViewModel.addAffinePoint(at: value.location, in: geometry.size)
                                                     editImageViewModel.geometryPoints.append(value.location)
                                                 }
+                                                else if (editImageViewModel.affinePoints.count >= 6)
+                                                {
+                                                    editImageViewModel.affinePoints = []
+                                                    editImageViewModel.geometryPoints = []
+                                                    editImageViewModel.addAffinePoint(at: value.location, in: geometry.size)
+                                                    editImageViewModel.geometryPoints.append(value.location)
+                                                }
                                             }
                                     )
                             }
@@ -210,6 +217,8 @@ struct EditingView: View {
                 // Retouch UI
                 if isRetouchActive {
                     RetouchUI(editImageViewModel: editImageViewModel, retouchAction: {
+                    }, confirmAction: {
+                        editImageViewModel.originalImage = editImageViewModel.editedImage
                     })
                 }
                 
@@ -222,8 +231,12 @@ struct EditingView: View {
                 
                 // Transformation UI
                 if isTransformingActive {
+                    Spacer()
                     TransformationUI(editImageViewModel: editImageViewModel, transformAction: {
                         editImageViewModel.applyAffineTransformation()
+                    }, clearAction: {
+                        editImageViewModel.affinePoints = []
+                        editImageViewModel.geometryPoints = []
                     })
                 }
                 
